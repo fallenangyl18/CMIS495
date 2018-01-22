@@ -112,7 +112,10 @@ public class InventoryDatabase
 	      {
                     sql += table.get(i) + ",";  
 	      }
-	      sql += data.get(i);  
+	      else
+	      {
+	          sql += data.get(i);
+	      }  
             }
 		
     	    sql += ");";
@@ -146,7 +149,10 @@ public class InventoryDatabase
 	    {
                 sql += data.get(i) + ",";   
 	    }
-            sql += data.get(i); 
+	    else
+	    {
+                sql += data.get(i); 
+	    }
          }  
 	    
 	 sql += ");"
