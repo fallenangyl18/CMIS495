@@ -29,7 +29,7 @@ public class InventoryDatabase
 	{
 		try
 		{
-	            Class.forName("JDBC_DRIVER");
+	            Class.forName(JDBC_DRIVER);
 	      	    conn = DriverManager.getConnection(DB_URL, USER, PASS);
 	    	    stmt = conn.createStatement();
 	    	    conn.setAutoCommit(false);
