@@ -101,25 +101,25 @@ public class InventoryDatabase
         return rs;
     }
  
-    public void create(ArrayList<String> table)
+    public void create(ArrayList<String> table, String name)
     {
-      	String sql = "CREATE TABLE " + table.get(0) + "( " + table.get(1) + ",";
+      	String sql = "CREATE TABLE " + name + "(";
+	    
     	try
       	{
-            for( int i = 2; i < table.size(); i++ )
+            for( int i = 0; i < table.size(); i++ )
     	    {
-                if( i == 2 )
-                {
-    	            sql += table.get(i);
-    		}
-    		else
-                {
-    		    sql += "," + table.get(i);
-    		}
-             }
-    	     sql += ");";
-             stmt.executeUpdate(sql);
-    	     conn.commit();
+	      if( i != table.size() - 1 )
+	      {
+                    sql += table.get(i) + ",";  
+	      }
+	      sql += data.get(i);  
+            }
+		
+    	    sql += ");";
+            stmt.executeUpdate(sql);
+    	    conn.commit();
+		
        	}
         catch(SQLException se)
         {
@@ -136,13 +136,24 @@ public class InventoryDatabase
     }
     
     
-    public void insert(ArrayList<String> data, String sqldb)
+    public void insert(ArrayList<String> data)
     {
      	
-      	 String sql = "INSERT INTO InventoryApp"  + "(" + data.get(1) + ")";
+      	 String sql = "INSERT INTO InventoryApp(";
+	    
+	 for( int i = 0; i < data.size(); i++ )
+    	 {
+            if( i != data.size() - 1 )
+	    {
+                sql += data.get(i) + ",";   
+	    }
+            sql += data.get(i); 
+         }  
+	    
+	 sql += ");"
          try
          {
-             stmt.executeUpdate(sqldb);
+             stmt.executeUpdate(sql);
              conn.commit();
          }
          catch(SQLException se)
