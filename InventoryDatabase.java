@@ -11,12 +11,12 @@ import java.util.*;
 public class InventoryDatabase 
 {
     //JDBC driver name and database URL
-    static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    static final String DB_URL = "";
+    private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    private static final String DB_URL = "";
     
     //Database credentials
-    static final String USER = "sqlDev";
-    static final String PASS = "Passw0rd";
+    private static final String USER = "sqlDev";
+    private static final String PASS = "Passw0rd";
     
     //query 
     private Connection conn = null;
