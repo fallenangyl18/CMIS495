@@ -80,7 +80,7 @@ public class InventoryDatabase
     {
      	String sql = "";
      	ResultSet rs = null;
-      	sql = "SELECT * FROM InventoryApp WHERE InventoryID = '" + ID + "';";
+      	sql = "SELECT * FROM InventoryApp WHERE InventoryID = \'" + ID + "\';";
         try
         {
 	    rs = stmt.executeQuery(sql);
