@@ -4,14 +4,10 @@
 
 import java.awt.*;
 import java.awt.event.*;
-import javax.naming.ldap.SortControl;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.util.*;
-import java.io.*;
 import java.sql.Timestamp;
-import java.time.Instant;
 
 public class GUICreator extends JFrame implements ActionListener
 {
@@ -113,6 +109,7 @@ public class GUICreator extends JFrame implements ActionListener
         JPanel menuLabelHolder = new JPanel();
         menuLabelHolder.setLayout(new FlowLayout());
         menuLabelHolder.add(menuLabel);
+        menuLabelHolder.setBorder(new EmptyBorder(10, 5, 15, 5));
         leftPanel.add(menuLabel);
 
         //creating a new JPanel for the item name text area and label
@@ -120,6 +117,7 @@ public class GUICreator extends JFrame implements ActionListener
         itemTextInfoPanel.setLayout(new BoxLayout(itemTextInfoPanel, BoxLayout.Y_AXIS));
         itemTextInfoPanel.add(itemNameLabel);
         itemTextInfoPanel.add(itemNameTextField);
+        itemTextInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(itemTextInfoPanel);
 
         //Panel to hold all of the quantity objects
@@ -127,6 +125,7 @@ public class GUICreator extends JFrame implements ActionListener
         quantityTextInfoPanel.setLayout(new BoxLayout(quantityTextInfoPanel, BoxLayout.Y_AXIS));
         quantityTextInfoPanel.add(quantityNameLabel);
         quantityTextInfoPanel.add(quantityTextField);
+        quantityTextInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(quantityTextInfoPanel);
 
         //Panel to hold all of the Expiration Date objects
@@ -134,12 +133,14 @@ public class GUICreator extends JFrame implements ActionListener
         expirationDateInfoPanel.setLayout(new BoxLayout(expirationDateInfoPanel, BoxLayout.Y_AXIS));
         expirationDateInfoPanel.add(expirationDateLabel);
         expirationDateInfoPanel.add(expirationDateTextField);
+        expirationDateInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(expirationDateInfoPanel);
 
         //Panel to hold the sort label
         JPanel sortLabelPanel = new JPanel();
         sortLabelPanel.setLayout(new BoxLayout(sortLabelPanel, BoxLayout.X_AXIS));
         sortLabelPanel.add(sortLabel);
+        sortLabelPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(sortLabelPanel);
 
         //JPanel for actual dropdown
@@ -157,6 +158,7 @@ public class GUICreator extends JFrame implements ActionListener
         buttonsPanel.add(sortButton);
         leftPanel.add(buttonsPanel);
 
+        //Adding all of hte components that are in the left panel into the overall container panel.
         containerPanel.add(leftPanel);
 
         //Creating the right panel that holds our inventory
