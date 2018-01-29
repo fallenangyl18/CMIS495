@@ -24,6 +24,9 @@ public class GUICreator extends JFrame implements ActionListener
     private JButton sortButton;
     private JComboBox sortByWhat;
 
+    //creating an enumeration for the sort types
+    private enum sortEntries { NAME, CATEGORY, EXPIRATION };
+
     //Create the GUI
     public GUICreator()
     {
@@ -210,9 +213,38 @@ public class GUICreator extends JFrame implements ActionListener
         else
         {
             //the source is the sort button.
+            sortEntries whatIsSelected = dropDownMenu(sortByWhat.getSelectedItem().toString());
+            switch(whatIsSelected)
+            {
+                case NAME:
+                    //sort by name functin is called
+                    break;
+                case CATEGORY:
+                    //sort by category function is called
+                    break;
+                case EXPIRATION:
+                    //sort by expiration date is called
+                    break;
+            }
+
             //I assume we don't want the timestamp when we are sorting??
             System.out.println("You hit the sort button.");
         }
+    }
+
+    //function that returns an enumeration of the sort entries
+    //based on the selected string that is in the combobox.
+    public sortEntries dropDownMenu(String selectedItem)
+    {
+        if (selectedItem.equals("Item Name"))
+        {
+            return sortEntries.NAME;
+        }
+        else if (selectedItem.equals("Category"))
+        {
+            return sortEntries.CATEGORY;
+        }
+        return sortEntries.EXPIRATION;
     }
 
     //MAIN FUNCTION, create new GUI object and set visible to true
