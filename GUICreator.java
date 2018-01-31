@@ -139,19 +139,12 @@ public class GUICreator extends JFrame implements ActionListener
         expirationDateInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(expirationDateInfoPanel);
 
-        //Panel to hold the sort label
-        JPanel sortLabelPanel = new JPanel();
-        sortLabelPanel.setLayout(new BoxLayout(sortLabelPanel, BoxLayout.X_AXIS));
-        sortLabelPanel.add(sortLabel);
-        sortLabelPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
-        leftPanel.add(sortLabelPanel);
-
         //JPanel for actual dropdown
         JPanel sortComboPanel = new JPanel();
         sortComboPanel.setLayout(new FlowLayout());
+        sortComboPanel.add(sortLabel);
         sortComboPanel.add(sortByWhat);
         leftPanel.add(sortComboPanel);
-
 
         //Creating a panel to sit inside of the left panel that holds the combobox
         JPanel buttonsPanel = new JPanel();
@@ -188,19 +181,41 @@ public class GUICreator extends JFrame implements ActionListener
     //Coding action listener
     public void actionPerformed(ActionEvent e)
     {
+        //Getting the entries from the GUI's text fields, that the user entered.
+        String itemEntry = itemNameTextField.getText();
+        int quantityEntry = Integer.parseInt(quantityTextField.getText());
+        int expirationEntry = Integer.parseInt(expirationDateTextField.getText());
+
         if (e.getSource() == addButton)
         {
             //dosomething here
-            System.out.println("You hit the add button.");
-            Timestamp theTimeIs = createTimeStamp();
-            System.out.println("The time is " + theTimeIs);
+
+            if (itemEntry != null && quantityEntry != 0 && expirationEntry != 0)
+            {
+                System.out.println("You hit the add button.");
+                Timestamp theTimeIs = createTimeStamp();
+                System.out.println("The time is " + theTimeIs);
+                JOptionPane.showMessageDialog(null, "You have successfully added item(s) to the database.");
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Please fill out all of the information in this form!");
+            }
         }
         else if (e.getSource() == editButton)
         {
-            //do something else
-            System.out.println("You hit the edit button.");
-            Timestamp theTimeIs = createTimeStamp();
-            System.out.println("The time is " + theTimeIs);
+            if (itemEntry != null && quantityEntry != 0 && expirationEntry != 0)
+            {
+                //do something else
+                System.out.println("You hit the edit button.");
+                Timestamp theTimeIs = createTimeStamp();
+                System.out.println("The time is " + theTimeIs);
+                JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Please fill out all of the information in this form!");
+            }
 
         }
         else if (e.getSource() == removeButton)
@@ -209,6 +224,7 @@ public class GUICreator extends JFrame implements ActionListener
             System.out.println("You hit the remove button.");
             Timestamp theTimeIs = createTimeStamp();
             System.out.println("The time is " + theTimeIs);
+            JOptionPane.showMessageDialog(null, "You have successfully renoved item(s) from the database.");
         }
         else
         {
