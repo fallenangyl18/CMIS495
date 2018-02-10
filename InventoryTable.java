@@ -24,29 +24,48 @@ public class InventoryTable extends JTable
     private ResultSet rs;
     private JTextField searchInput = new JTextField();
 	
-    InventoryTable( Object[][] rowData, Object[] columnNames)
-	{
-		super();
-		model = new DefaultTableModel(rowData, columnNames);
-		this.setModel(model);
-	    this.setShowGrid(true);
-	    this.setGridColor(Color.BLACK);
-	    db = new InventoryDatabase();
-	    
-	/**	model.addColumn("Name");
+   InventoryTable()
+   {
+             /**
+                super();
+		model = new DefaultTableModel();
+         	model.addColumn("Name");
 		model.addColumn("Inventory ID");
 		model.addColumn("Quantity");
 		model.addColumn("Expiration Date");
 		model.addColumn("Date Entered");
-		model.addColumn("Category"); **/
-		this.setAutoCreateRowSorter(true);	
+		model.addColumn("Category");
+		**/
+   }
+	
+	
+    InventoryTable( Object[][] rowData, Object[] columnNames )
+	{
+	    super();
+	    model = new DefaultTableModel(rowData, columnNames);
+	    this.setModel(model);
+	    this.setShowGrid(true);
+	    this.setGridColor(Color.BLACK);
+	    db = new InventoryDatabase();
+	    this.setAutoCreateRowSorter(true);	
 	}
     
   
 	
-	public void addNewRow(String name, int ID, int quantity, String date, String expiration, String category)
+	public void addNewRow( String name, int ID, int quantity, 
+			String date, String expiration, String category )
 	{
 		model.addRow(new Object[] {name, ID, quantity, date, expiration, category});
+		/**
+		ArrayList<Object> addList = new ArrayList<Object>();
+		addList.add(name);
+		addList.add(ID);
+		addList.add(quantity);
+		addList.add(date);
+		addList.add(expiration);
+		addList.add(category);
+                **/
+		//db.insertItem(addList);
 	}
 	
 	public void deleteRowByName( String name )
@@ -58,7 +77,7 @@ public class InventoryTable extends JTable
 			{
 				model.removeRow(i);
 			}
-		}	
+		}
 	}
 	
 	public void deleteRowByID( int ID )
@@ -72,6 +91,8 @@ public class InventoryTable extends JTable
 				break;
 			}
 		}	
+		
+		//db.deleteByID(ID);		
 	}
 	
 	public void updateRowByID(Object value, int ID, String column)
@@ -102,7 +123,14 @@ public class InventoryTable extends JTable
 				}
 				break;
 			}
-		}	
+		}
+		
+		/**
+		ArrayList<Object> updateList = new ArrayList<Object>();
+		updateList.add(value);
+                **/
+		//db.updateItemByID(updateList, ID);
+		
 	}
 	
 	
