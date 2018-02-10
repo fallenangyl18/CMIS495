@@ -140,7 +140,7 @@ public class InventoryTable extends JTable
 	
 	public void searchFilter(String filter)
 	{
-		
+	 	
 		
 	}
 	    
