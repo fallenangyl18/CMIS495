@@ -22,22 +22,12 @@ public class InventoryTable extends JTable
     private TableRowSorter<TableModel> sorter;
     private InventoryDatabase db;
     private ResultSet rs;
-    private JTextField searchInput = new JTextField();
+   // private JTextField searchInput = new JTextField();
 	
    InventoryTable()
    {
-             /**
-                super();
-		model = new DefaultTableModel();
-         	model.addColumn("Name");
-		model.addColumn("Inventory ID");
-		model.addColumn("Quantity");
-		model.addColumn("Expiration Date");
-		model.addColumn("Date Entered");
-		model.addColumn("Category");
-		**/
+          
    }
-	
 	
     InventoryTable( Object[][] rowData, Object[] columnNames )
 	{
