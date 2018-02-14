@@ -21,10 +21,12 @@ public class GUICreator extends JFrame implements ActionListener
     private JTextField itemNameTextField;
     private JTextField quantityTextField;
     private JTextField expirationDateTextField;
+    private JTextField notesTextField;
     private JButton sortButton;
     private JComboBox sortByWhat;
     private JComboBox itemCategory;
     DataPanel data = new DataPanel();
+    InventoryDatabase database = new InventoryDatabase();
     JTable jTable = new JTable();
     DefaultTableModel model;
 
@@ -53,7 +55,7 @@ public class GUICreator extends JFrame implements ActionListener
 
         //Setting the JComboBox options for the dropdown
         //Feel free to add more as we need
-        Object[] colNames = {"Item Name", "Item Quantity", "Expiration Date", "Item Category"};
+        Object[] colNames = {"Item Name", "Item Quantity", "Expiration Date", "Item Category", "Notes"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(colNames);
         jTable.setModel(model);
@@ -81,6 +83,11 @@ public class GUICreator extends JFrame implements ActionListener
         itemNameTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemNameTextField.getPreferredSize().height));
         itemNameTextField.setEditable(true);
         JLabel itemNameLabel = new JLabel("Item Name: ");
+
+        notesTextField = new JTextField();
+        notesTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemNameTextField.getPreferredSize().height));
+        notesTextField.setEditable(true);
+        JLabel notesLabel = new JLabel("Additional Notes: ");
 
         //quantity text field objects
         quantityTextField = new JTextField();
@@ -161,6 +168,14 @@ public class GUICreator extends JFrame implements ActionListener
         categoryPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
         leftPanel.add(categoryPanel);
 
+        JPanel notesTextPanel = new JPanel();
+        notesTextPanel.setLayout(new BoxLayout(notesTextPanel, BoxLayout.Y_AXIS));
+        notesTextPanel.add(notesLabel);
+        notesTextPanel.add(notesTextField);
+        notesTextPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
+        leftPanel.add(notesTextPanel);
+
+
         //JPanel for sort dropdown
         JPanel sortComboPanel = new JPanel();
         sortComboPanel.setLayout(new BoxLayout(sortComboPanel, BoxLayout.X_AXIS));
@@ -215,7 +230,8 @@ public class GUICreator extends JFrame implements ActionListener
             int quantityEntry = Integer.parseInt(quantityTextField.getText());
             String expirationEntry = expirationDateTextField.getText();
             String categoryEntry = itemCategory.getSelectedItem().toString();
-            Object[] row = new Object[4];
+            String notesEntry = notesTextField.getText();
+            Object[] row = new Object[5];
 
             if (e.getSource() == addButton)
             {
@@ -225,6 +241,7 @@ public class GUICreator extends JFrame implements ActionListener
                     row[1] = quantityEntry;
                     row[2] = expirationEntry;
                     row[3] = categoryEntry;
+                    row[4] = notesEntry;
                     model.addRow(row);
 
                     Timestamp theTimeIs = createTimeStamp();
