@@ -1,3 +1,4 @@
+package Inventory;
 /**
  * Created by Beth on 1/16/2018.
  */
@@ -5,7 +6,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;;
+import javax.swing.border.EmptyBorder;
 import java.sql.Timestamp;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
@@ -26,7 +27,9 @@ public class GUICreator extends JFrame implements ActionListener
     private JComboBox sortByWhat;
     private JComboBox itemCategory;
     DataPanel data = new DataPanel();
+
     InventoryDatabase database = new InventoryDatabase();
+
     JTable jTable = new JTable();
     DefaultTableModel model;
 
@@ -55,6 +58,7 @@ public class GUICreator extends JFrame implements ActionListener
 
         //Setting the JComboBox options for the dropdown
         //Feel free to add more as we need
+
         Object[] colNames = {"Item Name", "Item Quantity", "Expiration Date", "Item Category", "Notes"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(colNames);
@@ -174,8 +178,7 @@ public class GUICreator extends JFrame implements ActionListener
         notesTextPanel.add(notesTextField);
         notesTextPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(notesTextPanel);
-
-
+    
         //JPanel for sort dropdown
         JPanel sortComboPanel = new JPanel();
         sortComboPanel.setLayout(new BoxLayout(sortComboPanel, BoxLayout.X_AXIS));
@@ -224,6 +227,7 @@ public class GUICreator extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         try
+
         {
             //Getting the entries from the GUI's text fields, that the user entered.
             String itemEntry = itemNameTextField.getText();
@@ -303,6 +307,7 @@ public class GUICreator extends JFrame implements ActionListener
         }
         catch (NumberFormatException ex)
         {
+
             JOptionPane.showMessageDialog(null, "Error: Please make sure all fields are filled out before attempting to " +
                     "add an item to the database. Error message: " + ex.getMessage());
         }

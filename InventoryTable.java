@@ -1,4 +1,4 @@
-package table;
+package Inventory;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -46,7 +46,7 @@ public class InventoryTable extends JTable
 			String date, String expiration, String category )
 	{
 		model.addRow(new Object[] {name, ID, quantity, date, expiration, category});
-		/**
+	
 		ArrayList<Object> addList = new ArrayList<Object>();
 		addList.add(name);
 		addList.add(ID);
@@ -54,8 +54,8 @@ public class InventoryTable extends JTable
 		addList.add(date);
 		addList.add(expiration);
 		addList.add(category);
-                **/
-		//db.insertItem(addList);
+                
+		db.insertItem(addList);
 	}
 	
 	public void deleteRowByName( String name )
@@ -82,7 +82,7 @@ public class InventoryTable extends JTable
 			}
 		}	
 		
-		//db.deleteByID(ID);		
+		db.deleteByID(ID);		
 	}
 	
 	public void updateRowByID(Object value, int ID, String column)
@@ -115,11 +115,11 @@ public class InventoryTable extends JTable
 			}
 		}
 		
-		/**
+		
 		ArrayList<Object> updateList = new ArrayList<Object>();
 		updateList.add(value);
-                **/
-		//db.updateItemByID(updateList, ID);
+                
+		db.updateItemByID(updateList, ID);
 		
 	}
 	
