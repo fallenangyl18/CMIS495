@@ -1,18 +1,37 @@
-package database;
+package Inventory;
 
 /**
- * version 1.0
+ * version 1.1
+ *  edited by Sharon Walker 1/23/2018
+ *  removed create table functions and renamed functions to be clearer on their purpose
  * 
  */
 
 import java.sql.*;
 import java.util.*;
+import java.sql.Date;
 
 public class InventoryDatabase 
 {
-    //JDBC driver name and database URL
+	public static String getDbUrl() {
+		return DB_URL;
+	}
+
+	public static String getJdbcDriver() {
+		return JDBC_DRIVER;
+	}
+	
+    public static String getUser() {
+		return USER;
+	}
+
+	public static String getPass() {
+		return PASS;
+	}
+
+	//JDBC driver name and database URL
     private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DB_URL = "";
+    private static final String DB_URL = "jdbc:sqlserver://localhost\\MDAC50008w10\\sqlexpress2017;databaseName=InventoryApp";  // This will change for everyone's computer - SW
     
     //Database credentials
     private static final String USER = "sqlDev";
@@ -21,153 +40,294 @@ public class InventoryDatabase
     //query 
     private Connection conn = null;
     private Statement stmt = null;
-    private ResultSet rs;
+    //private ResultSet rs;
     
 	
-	InventoryDatabase()
-	{
-		try
-		{
-	            Class.forName(JDBC_DRIVER);
-	      	    conn = DriverManager.getConnection(DB_URL, USER, PASS);
-	    	    stmt = conn.createStatement();
-	    	    conn.setAutoCommit(false);
-		}
-		catch(SQLException se)
-		{
-		    se.printStackTrace();
-		}
-		catch(Exception e)
-		{
-		    e.printStackTrace();
-		}
-		finally
-		{
-			
-		}
-	}
-	
-    public void createTables()
+    public void init(){
+      try{
+       
+       Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+      conn=DriverManager.getConnection(
+              "jdbc:sqlserver://localhost\\MDAC50008w10\\sqlexpress2017;databaseName=InventoryApp","sqldev", "Passw0rd"
+               );
+      }
+      catch(ClassNotFoundException | SQLException e){
+         System.out.println(e);
+       }
+   }
+ 
+  public Connection getMyConnection(){
+      
+       return conn;
+   }
+  
+     // 1-23-18 fix sql code updated function to use prepared statements -Sharon  
+    public ResultSet getItemByID(int ID) throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
     {
-     	String sql = "";
-     	try
-     	{
-    	    sql = "CREATE TABLE InventoryApp(InventoryID BIGINT, itemName VARCHAR(50), "
-    				+ "QTY decimal(8,2),"
-    				+ "ExpireDate DATETIME, DateEntered TIMESTAMP, LastUpdated TIMESTAMP," +
-    			    	"isDeleted BIT" + ");";
-            stmt.executeUpdate(sql);
-    	    stmt.executeUpdate(sql);
-    	    conn.commit();
-    		
-    	 }
-    	 catch(SQLException se)
-    	 {
-    	     se.printStackTrace();
-    	 }
-    	 catch(Exception e )
-    	 {
-             e.printStackTrace();
-         }
-    	 finally
-     	 {
-     		
-         }
-    }
-    
-    public ResultSet select(int ID)
-    {
-     	String sql = "";
+        PreparedStatement prepareStatement = null;
+     	String sql;
      	ResultSet rs = null;
-      	sql = "SELECT * FROM InventoryApp WHERE InventoryID = \'" + ID + "\';";
+      	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, , notes, category FROM InventoryApp WHERE InventoryID = ?";
         try
         {
-	    rs = stmt.executeQuery(sql);
+            prepareStatement = conn.prepareStatement(sql);
+            prepareStatement.setInt(1,ID);
+	    rs = prepareStatement.executeQuery(sql);
     	    conn.commit();
+            
+           // while (rs.next())
+           // {
+           //     int inventoryID = rs.getInt("InventoryID");
+            //    String itemName = rs.getString("ItemName");
+            //    int qty = rs.getInt("QTY");
+            //    java.util.Date expDate = rs.getDate("ExpireDate");
+            //    java.util.Date dateEntered = rs.getDate("DateEntered");
+            //    java.util.Date lastUpdated = rs.getDate("LastUpdated");
+             //   boolean isDeleted = rs.getBoolean("IsDeleted");
+                
+           // }
+           return rs;
     	}
     	catch(SQLException se)
         {
-	    se.printStackTrace();
     	}
     	catch(Exception e)
 	{
-            e.printStackTrace();
+    	}
+    	finally
+     	{
+    		if (prepareStatement != null)
+                {
+		prepareStatement.close();
+		}
+      	}
+        return rs;
+    }   
+    
+     public ResultSet getAllActiveItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+    { 
+        PreparedStatement prepareStatement = null;
+     	String sql;
+     	ResultSet rs = null;
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0";
+          try 
+          {
+            prepareStatement = conn.prepareStatement(sql);           
+            rs = prepareStatement.executeQuery(sql);
+    	    conn.commit();          
+          return rs;
+    	}
+    	catch(SQLException se)
+        {
+    	}
+    	catch(Exception e)
+	{
     	}
     	finally
      	{
     		
       	}
-        return rs;
-    }
- 
-    public void create(ArrayList<String> table, String name)
-    {
-      	String sql = "CREATE TABLE " + name + "(";
-	    
-    	try
-      	{
-            for( int i = 0; i < table.size(); i++ )
-    	    {
-	      if( i != table.size() - 1 )
-	      {
-                    sql += table.get(i) + ",";  
-	      }
-	      else
-	      {
-	          sql += data.get(i);
-	      }  
-            }
-		
-    	    sql += ");";
-            stmt.executeUpdate(sql);
-    	    conn.commit();
-		
-       	}
-        catch(SQLException se)
-        {
-   	    se.printStackTrace();
-    	}
-    	catch(Exception e)
-    	{
-            e.printStackTrace();
+       return rs;
+    }   
+     
+     public ResultSet getAllActiveProduceItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     { 
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Produce'";
+           try 
+           {
+             prepareStatement = conn.prepareStatement(sql);           
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();          
+           return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
      	}
      	finally
-     	{
-    		
-	}
-    }
-    
-    
-    public void insert(ArrayList<String> data)
-    {
-     	
-      	 String sql = "INSERT INTO InventoryApp(";
-	    
-	 for( int i = 0; i < data.size(); i++ )
-    	 {
-            if( i != data.size() - 1 )
-	    {
-                sql += data.get(i) + ",";   
-	    }
-	    else
-	    {
-                sql += data.get(i); 
-	    }
-         }  
-	    
-	 sql += ");"
+      	{
+     		
+       	}
+        return rs;
+     }   
+     
+     public ResultSet getAllActiveMeatItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     { 
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Meat'";
+           try 
+           {
+             prepareStatement = conn.prepareStatement(sql);           
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();          
+           return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
+     	}
+     	finally
+      	{
+     		
+       	}
+        return rs;
+     }   
+     
+     public ResultSet getAllActiveDairyItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     { 
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Dairy'";
+           try 
+           {
+             prepareStatement = conn.prepareStatement(sql);           
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();          
+           return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
+     	}
+     	finally
+      	{
+     		
+       	}
+        return rs;
+     }  
+     
+     public ResultSet getAllActiveNonParishablesItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     { 
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category like 'non%'";
+           try 
+           {
+             prepareStatement = conn.prepareStatement(sql);           
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();          
+           return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
+     	}
+     	finally
+      	{
+     		
+       	}
+        return rs;
+     }   
+     
+     public ResultSet getAllActiveLiquidItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     { 
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Liquids'";
+           try 
+           {
+             prepareStatement = conn.prepareStatement(sql);           
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();          
+           return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
+     	}
+     	finally
+      	{
+     		
+       	}
+        return rs;
+     }   
+     
+     public ResultSet getItemsByExpireDate(Date currentdate ) throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+     {
+         PreparedStatement prepareStatement = null;
+      	String sql;
+      	ResultSet rs = null;
+       	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, notes, category FROM InventoryApp WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
          try
          {
-             stmt.executeUpdate(sql);
-             conn.commit();
+             prepareStatement = conn.prepareStatement(sql);
+             prepareStatement.setDate(1, currentdate);             
+             rs = prepareStatement.executeQuery(sql);
+     	    conn.commit();
+             
+            // while (rs.next())
+            // {
+            //     int inventoryID = rs.getInt("InventoryID");
+             //    String itemName = rs.getString("ItemName");
+             //    int qty = rs.getInt("QTY");
+             //    java.util.Date expDate = rs.getDate("ExpireDate");
+             //    java.util.Date dateEntered = rs.getDate("DateEntered");
+             //    java.util.Date lastUpdated = rs.getDate("LastUpdated");
+              //   boolean isDeleted = rs.getBoolean("IsDeleted");
+                 
+            // }
+            return rs;
+     	}
+     	catch(SQLException se)
+         {
+     	}
+     	catch(Exception e)
+ 	{
+     	}
+     	finally
+      	{
+     		if (prepareStatement != null)
+                 {
+ 		prepareStatement.close();
+ 		}
+       	}
+         return rs;
+     }   
+     
+ 
+     // 1-23-18 fix sql code updated function to use prepared statements -Sharon
+    public void insertItem(ArrayList<Object> data)
+    { try
+        {
+     	PreparedStatement prepStmt;
+      	 String sql = "INSERT INTO InventoryApp(ItemName, QTY, ExpireDate, EnteredDate, LastUpdated, IsDeleted, notes, category) values (?,?,?,?,?,?,?,?)";
+	 prepStmt = conn.prepareStatement(sql);
+         Array array = conn.createArrayOf("VARCHAR", data.toArray());
+            	 
+         prepStmt.setArray(1,array);
+         prepStmt.setArray(2,array);
+         prepStmt.setArray(3,array);
+         prepStmt.setArray(4,array);
+         prepStmt.setArray(5,array);
+         prepStmt.setArray(6,array);
+         prepStmt.setArray(7,array);
+         prepStmt.setArray(8,array);
+         prepStmt.executeUpdate(sql);
+         conn.commit();
          }
          catch(SQLException se)
          {
-             se.printStackTrace();
          }
          catch(Exception e)
          {
-             e.printStackTrace();
          }
          finally
          {
@@ -175,61 +335,65 @@ public class InventoryDatabase
          }
     }
     
-    public void update(String column, int ID)
+    // 1-23-18 fix sql code updated function to use prepared statements -Sharon
+    public void updateItemByID(ArrayList<Object> data, int ID)
     {
-        String sql = "UPDATE InventoryApp SET" + column + "WHERE InventoryID = \'" + ID + "\';";
-    	try
+        try
         {
-            stmt.executeUpdate(sql);
+       
+         PreparedStatement prepStmt;
+      	 String sql = "UPDATE InventoryApp SET ItemName = ?, QTY =?, ExpireDate =?, EnteredDate = ?, LastUpdated = ?, IsDeleted = ? , notes = ?, category = ? WHERE InventoryID = ?";
+	 prepStmt = conn.prepareStatement(sql);
+         Array array = conn.createArrayOf("VARCHAR", data.toArray());
+            	 
+         prepStmt.setArray(1,array);
+         prepStmt.setArray(2,array);
+         prepStmt.setArray(3,array);
+         prepStmt.setArray(4,array);
+         prepStmt.setArray(5,array);
+         prepStmt.setArray(6,array);
+         prepStmt.setArray(7,array);
+         prepStmt.setArray(8,array);
+         prepStmt.setInt(9, ID);
+         prepStmt.executeUpdate(sql);
+         conn.commit();
+         }
+         catch(SQLException se)
+         {
+         }
+         catch(Exception e)
+         {
+         }
+         finally
+         {
+        	 
+         }
+    }
+    
+    // 1-23-18  Updated SQL code and instituted prepared statements - Sharon
+    public void deleteByID(int ID ) 
+    {PreparedStatement prepStmt;
+        try
+        {           
+     	String sql = "DELETE FROM InventoryApp WHERE InventoryID = ?";
+         prepStmt = conn.prepareStatement(sql);
+         prepStmt.setInt(1, ID);
+         prepStmt.executeUpdate(sql);
+         conn.commit();
+            prepStmt.executeUpdate(sql);
             conn.commit();
-        }
+    	}
     	catch(SQLException se)
     	{
-            se.printStackTrace();
        	}
     	catch(Exception e)
     	{
-            e.printStackTrace();	
-        }
-    	finally
-       	{
-    	
-    	}
-    }
-    
-    public void delete( String table, int ID )
-    {
-     	String sql = "DELETE FROM InventoryApp" + " WHERE InventoryID = \'" + ID + "\';";
-        try
-        {
-            stmt.executeUpdate(sql);
-            conn.commit();
-    	}
-    	catch(SQLException se)
-    	{
-    	    se.printStackTrace();
-       	}
-    	catch(Exception e)
-    	{
-    	    e.printStackTrace();	
     	}
     	finally
        	{
-    	
+           
     	}
     }
-    
-    public void closeDB()
-    {
-        try
-    	{
-    	    stmt.close();
-    	}
-    	catch(SQLException se)
-      	{
-        }
-    	catch(Exception e)
-    	{
-    	}
-    }
+
+
 }
