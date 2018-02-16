@@ -1,9 +1,8 @@
-package Inventory;
 
 /**
  * Created by Sumit on 02/10/2018, supports add/update/delete by ID and name and GUI customization
  * Updated by Sumit on 02/15/2018 to support external row sorter, 
- * Search filter, updated add, update, and delete for ID and Names
+ * Search filter, updated add, update, and delete
  */
 
 
@@ -34,7 +33,7 @@ import java.util.*;
 public class InventoryTable extends JTable 
 {
     private DefaultTableModel model;
-    private TableRowSorter<TableModel> sorter; //external row sorter
+    private TableRowSorter<TableModel> sorter;
     //private InventoryDatabase db;
     private ResultSet rs;
     private JTextField searchInput = new JTextField();
@@ -58,11 +57,11 @@ public class InventoryTable extends JTable
         this.setEnabled(false); //cells are not editable
 		this.setModel(model); //sets column headers and rows
 	    this.setShowGrid(true); //shows gridlines
-	    this.setGridColor(Color.BLACK); //colored gridlines
+	    this.setGridColor(Color.BLACK);
 	    
-	    sorter = new TableRowSorter<TableModel>(model); //set the row sorter to the current model
+	    sorter = new TableRowSorter<TableModel>(model);
 	   
-	    sorter.setComparator(1, new Comparator<Integer>()   //comparator for column 1
+	    sorter.setComparator(1, new Comparator<Integer>() 
 	    {
 			@Override
 			public int compare(Integer o1, Integer o2) 
@@ -71,7 +70,7 @@ public class InventoryTable extends JTable
 			}
 	    });
 	    
-	    sorter.setComparator(2, new Comparator<Integer>() //comparator for column 2
+	    sorter.setComparator(2, new Comparator<Integer>() 
 	    {
 			@Override
 			public int compare(Integer o1, Integer o2) 
@@ -80,13 +79,13 @@ public class InventoryTable extends JTable
 			}
 	    });
 	    
-	    this.setRowSorter(sorter);   
+	    this.setRowSorter(sorter);
 	    //db = new InventoryDatabase()
 	    
 	    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 	    String date = String.valueOf(currentDate);
 	    
-        /**
+        
 	    DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
 	     
 	    	 public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, 
@@ -113,7 +112,7 @@ public class InventoryTable extends JTable
 	 		       	    }
 	    	      	return cell;
 	    	    }
-	    	**/
+	    	
 	    	  /**
 	    	    public void setValue(Object value) { 
 	        	
@@ -137,18 +136,28 @@ public class InventoryTable extends JTable
 	        }**/
 	     };
 	 	    
-	    // this.setDefaultRenderer(Object.class, colorRenderer);
+	     this.setDefaultRenderer(Object.class, colorRenderer);
 	     
 	}
     
    
     
     
-    	 //adds row to Database and table
+    	 
 	public void addNewRow(String name, int ID, int quantity, Timestamp date, String expiration, String category)
 	{
 		model.addRow( new Object[] { name, ID, quantity, date, expiration, category } );
-		//database add goes here
+		ArrayList<Object> addList = new ArrayList<Object>();
+		addList.add(name);
+		addList.add(ID);
+		addList.add(quantity);
+		addList.add(date);
+		addList.add(expiration);
+		addList.add(category);
+                
+		db.insertItem(addList);
+		
+		
 	}
 	
 	public void deleteRowByName( String name )
@@ -162,7 +171,6 @@ public class InventoryTable extends JTable
 		}	
 	}
 	
-         //deletes row from database and table by ID
 	public void deleteRowByID( int ID )
 	{
 		for( int i = 0; i < model.getRowCount(); i++ )
@@ -173,9 +181,10 @@ public class InventoryTable extends JTable
 				break;
 			}
 		}	
+		db.deleteByID(ID);
+		
 	}
 	
-       //updates row in database and in table
 	public void updateRowByID(Object[] value, int ID)
 	{
 		for( int i = 0; i < model.getRowCount(); i++ )
@@ -190,9 +199,14 @@ public class InventoryTable extends JTable
 			}
 			break;
 		}	
+		
+		ArrayList<Object> updateList = new ArrayList<Object>();
+		updateList.add(value);
+                
+		db.updateItemByID(updateList, ID);
 	}
 	
-	//updates row by name
+	
 	public void updateRowByName(Object value, String name, String column)
 	{
 		for(int i = 0; i < model.getRowCount(); i++)
@@ -224,7 +238,7 @@ public class InventoryTable extends JTable
 		}	
 	}
 	
-	///searching in the table
+	
 	public void searchFilter(String filter)
 	{
 		if(!filter.equals(""))
