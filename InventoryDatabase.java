@@ -6,7 +6,7 @@ package Inventory;
  *  removed create table functions and renamed functions to be clearer on their purpose
  * 
  *edited 02/16/2018 Sumit Malhotra
- *created tableQuantityByCategory(), tableQuanityByTotal()
+ *created tableQuantityByCategory(), tableQuanityByTotal(), methods need to be revised
  *
  */
 
