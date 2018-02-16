@@ -5,6 +5,9 @@ package Inventory;
  *  edited by Sharon Walker 1/23/2018
  *  removed create table functions and renamed functions to be clearer on their purpose
  * 
+ *edited 02/16/2018 Sumit Malhotra
+ *created tableQuantityByCategory(), tableQuanityByTotal()
+ *
  */
 
 import java.sql.*;
@@ -393,6 +396,58 @@ public class InventoryDatabase
        	{
            
     	}
+    }
+	
+	
+	
+    public ResultSet tableQuantityByCategory() //additions by Sumit 02/16/2018 -- This needs to be revised
+    {
+    	    PreparedStatement preparedStatement = null;
+    	    ResultSet resultSet = null;
+    	    String sql = "SELECT Category , SUM(QUANTITY) FROM InventoryApp GROUP BY Category;";
+    	    
+    	    try 
+    	    {
+    	        preparedStatement = conn.prepareStatement(sql);
+	        resultSet = preparedStatement.executeQuery(sql);
+    	    	conn.commit();
+    	    	preparedStatement.close();
+            } 
+    	    catch (SQLException e) 
+    	    {
+    	    	
+     		e.printStackTrace();
+             }
+    	  
+    	    return resultSet;
+    }
+   
+    public ResultSet tableQuantityByTotal() //additions by Sumit 02/16/2018 --This needs to be revised
+    {
+    	  PreparedStatement preparedStatement = null;
+    	  ResultSet resultSet = null;
+    	  String sql = "SELECT SUM(QUANTITY) FROM InventoryApp;";
+    	 
+    	   try
+    	   {
+               preparedStatement = conn.prepareStatement(sql);
+    	       resultSet = preparedStatement.executeQuery(sql);
+    	       conn.commit();
+    	       preparedStatement.close();
+    	   }
+    	   catch (SQLException e )
+    	   {
+               e.printStackTrace();
+    	   }
+    	   catch(Exception e1)
+    	   {
+    		   
+    	   }
+    	   finally
+    	   {
+    		  
+    	   }
+    	   return rs;
     }
 
 
