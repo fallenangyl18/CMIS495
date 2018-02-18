@@ -1,12 +1,24 @@
 package Inventory;
 
 
-/**
- * Created by Sumit on 02/10/2018, supports add/update/delete by ID and name and GUI customization
- * Updated by Sumit on 02/15/2018 to support external row sorter, 
+/****************************** REVISION HISTORY **************************************************
+ * VERSION 1.0
+ * Created by Sumit Malhotra on 02/10/2018, supports add/update/delete by ID and name and GUI customization
+ * Supports adding, updating, and deleting in database
+ *
+ * VERSION 1.1
+ * Updated by Sumit Malhotra on 02/15/2018 to support external row sorter, 
  * Search filter, updated add, update, and delete by ID
  * 
- */
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ **************************************************************************************************/
 
 
 import java.util.*;
