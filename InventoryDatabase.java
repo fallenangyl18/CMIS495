@@ -1,14 +1,21 @@
 package Inventory;
 
-/**
+/******************* REVISION HISTORY ****************************************************
+ *  version 1.0
+ *  Created by Sumit Malhotra 1/22/2018
+ *  Class supports JDBC Drivers and connection elements to support connection to database
+ *  Contains methods to create tables, add, update, delete, and select data in the database
+ *
  * version 1.1
  *  edited by Sharon Walker 1/23/2018
  *  removed create table functions and renamed functions to be clearer on their purpose
  * 
- *edited 02/16/2018 Sumit Malhotra
- *created tableQuantityByCategory(), tableQuanityByTotal(), methods need to be revised
+ *  version 1.1
+ *  edited 02/16/2018 Sumit Malhotra
+ *  created tableQuantityByCategory(), tableQuanityByTotal() to support
+ *  getting quantity totals from database, methods need to be revised
  *
- */
+ *****************************************************************************************/
 
 import java.sql.*;
 import java.util.*;
