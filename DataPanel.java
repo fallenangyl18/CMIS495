@@ -1,9 +1,24 @@
 package Inventory;
 
-/***
-* Created by Sumit on 02/10/2018 creates the panel with inventory totals by category 
-* Updated by Sumit on 02/15/2018 changed categories, database calls, updated GUI output
-**/
+/*************************** REVISION HISTORY ****************************************
+* 
+*
+* VERSION 1.0
+* Created by Sumit Malhotra on 02/10/2018 creates the panel with inventory totals by category, 
+* categories are represented by swing elements
+*
+* VERSION 1.1
+* Updated by Sumit Malhotra on 02/15/2018 changed categories, database calls to new
+* methods in database, updated GUI output with progress bars
+*
+*
+*
+*
+*
+*
+*
+*
+**************************************************************************************/
 
 import javax.swing.*;
 import java.awt.*;
