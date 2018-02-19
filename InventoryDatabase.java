@@ -15,6 +15,9 @@ package Inventory;
  *  created tableQuantityByCategory(), tableQuanityByTotal() to support
  *  getting quantity totals from database, methods need to be revised
  *
+ * edited by Sharon Walker 2/19/2018 
+ * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
+ *
  *****************************************************************************************/
 
 import java.sql.*;
