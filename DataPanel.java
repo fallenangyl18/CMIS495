@@ -1,4 +1,25 @@
 package Inventory;
+
+/*************************** REVISION HISTORY ****************************************
+* 
+*
+* VERSION 1.0
+* Created by Sumit Malhotra on 02/10/2018 creates the panel with inventory totals by category, 
+* categories are represented by swing elements
+*
+* VERSION 1.1
+* Updated by Sumit Malhotra on 02/15/2018 changed categories, database calls to new
+* methods in database, updated GUI output with progress bars
+*
+*
+*
+*
+*
+*
+*
+*
+**************************************************************************************/
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -7,69 +28,88 @@ import java.util.*;
 
 public class DataPanel extends JPanel
 {
+	private ResultSet rs;
+	private InventoryDatabase db;
 
-    private ResultSet rs;
-    private InventoryDatabase db;
-    private JLabel totalInventory = new JLabel("Total Inventory:");
-    private JLabel pork = new JLabel("Pork:");
-    private JLabel chicken = new JLabel("Chicken:");
-    private JLabel vegetables = new JLabel("Vegetables:");
-    private JLabel fruits = new JLabel("Fruits:");
-    private JLabel beef = new JLabel("Beef:");
-    private JLabel dairy = new JLabel("Dairy:");
-    private JLabel fish = new JLabel("Fish:");
-    private JLabel grains = new JLabel("Grains:");
-    private JLabel oil = new JLabel("Oils:");
-    private JLabel legumes = new JLabel("Legumes:");
-    private JLabel other = new JLabel("Other:");
-    JPanel foodGroupPanel = new JPanel();
+	private JLabel totalInventory = new JLabel("Total Inventory:");
+	private JLabel produce = new JLabel("Produce:      0/100");
+	private JLabel meat = new JLabel("Meat:      0/100");
+	private JLabel dairy = new JLabel("Dairy:     0/100");
+	private JLabel nonperishable = new JLabel("Non-perishable:    0/100");
+	private JLabel liquids = new JLabel("Liquids:      0/100");
+	private JProgressBar produceJPB;
+	private JProgressBar meatJPB;
+	private JProgressBar dairyJPB;
+	private JProgressBar nonperishableJPB;
+	private JProgressBar liquidsJPB;
+	
+	JPanel foodGroupPanel = new JPanel();
 
+	public DataPanel()
+	{
+		super();
+		
+		UIManager.put("ProgressBar.selectionForeground", Color.GREEN);
+		produceJPB = new JProgressBar(0 , 100);
+		meatJPB = new JProgressBar(0 , 100);
+		dairyJPB = new JProgressBar(0 , 100);
+		nonperishableJPB = new JProgressBar(0 , 100);
+		liquidsJPB = new JProgressBar(0 , 100);
+		
+		this.setBorder(BorderFactory.createLoweredBevelBorder());
+		foodGroupPanel.setLayout(new GridLayout(6, 2));
+		//db = new InventoryDatabase();
+		
+		totalInventory.setFont(new Font("default", Font.BOLD, 18));
+		totalInventory.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		produceJPB.setValue(45);
+		produceJPB.setForeground(Color.GREEN);
+		
+		meatJPB.setValue(100);
+		meatJPB.setForeground(Color.GREEN);
+		
+		dairyJPB.setValue(100);
+		dairyJPB.setForeground( Color.GREEN );
+		
+		nonperishableJPB.setValue(100);
+		nonperishableJPB.setForeground( Color.GREEN );
+		
+		liquidsJPB.setValue(75);
+		liquidsJPB.setForeground( Color.getHSBColor(179, 64, 95) );
+		
+		/**
+		totalInventory = new JLabel("Total Inventory:" + countTotalInventory());
+		**/
+	   
+		this.add(totalInventory);
+		foodGroupPanel.add(produce);
+	    foodGroupPanel.add(produceJPB);
+	   
+	    foodGroupPanel.add(meat);
+	    foodGroupPanel.add(meatJPB);
+	    
+	    foodGroupPanel.add(dairy);
+	    foodGroupPanel.add(dairyJPB);
+	    
+	    foodGroupPanel.add(nonperishable);
+	    foodGroupPanel.add(nonperishableJPB);
+	
+	    this.add(foodGroupPanel);
 
-    public DataPanel()
-    {
-        super();
-        foodGroupPanel.setLayout(new GridLayout(2, 6));
-        /*db = new InventoryDatabase();
-        totalInventory = new JLabel("Total Inventory:" + countTotalInventory());
-        pork = new JLabel("Pork:" + countFoodGroup("Pork") );
-        chicken = new JLabel("Chicken:" + countFoodGroup("Chicken") );
-        vegetables = new JLabel("Vegetables:" + countFoodGroup("Vegetables") );
-        fruits = new JLabel("Fruits:" + countFoodGroup("Fruits") );
-        beef = new JLabel("Beef:" + countFoodGroup("Beef") );
-        dairy = new JLabel("Dairy:" + countFoodGroup("Dairy") );
-        fish = new JLabel("Fish:"  + countFoodGroup("Fish") );
-        grains = new JLabel("Grains:" + countFoodGroup("Grains") );
-        oil = new JLabel("Oils:" + countFoodGroup("Oils") );
-        legumes = new JLabel("Legumes:" + countFoodGroup("Legumes") );
-        other = new JLabel("Other:" + countFoodGroup("Other") ); */
-
-        foodGroupPanel.add(totalInventory);
-        foodGroupPanel.add(pork);
-        foodGroupPanel.add(chicken);
-        foodGroupPanel.add(vegetables);
-        foodGroupPanel.add(fruits);
-        foodGroupPanel.add(beef);
-        foodGroupPanel.add(dairy);
-        foodGroupPanel.add(fish);
-        foodGroupPanel.add(grains);
-        foodGroupPanel.add(oil);
-        foodGroupPanel.add(legumes);
-        foodGroupPanel.add(other);
-        this.add(foodGroupPanel);
-
-    }
-
-  /*  public int countTotalInventory()
-    {
-        rs = db.customQuery("SELECT SUM(Quantity) FROM InventoryApp;");
-        return rs.getInt(0);
-    }
-
-    public int countFoodGroup(String foodGroup)
-    {
-        rs = db.customQuery("SELECT SUM(Quantity) FROM InventoryApp WHERE Category= \'"+ foodGroup +"\';");
-        return rs.getInt(0);
-    }
-*/
+	}
+	
+	public int countTotalInventory()
+	{
+	    db.tableQuantityByTotal();
+		return 0;
+	}
+	
+	public int countFoodGroup(String foodGroup)
+	{
+	    db.tableQuantityByCategory();
+		return 0;
+	}
+	
 
 }

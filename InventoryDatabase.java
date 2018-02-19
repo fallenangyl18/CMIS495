@@ -1,14 +1,24 @@
 package Inventory;
 
-/**
+/******************* REVISION HISTORY ****************************************************
+ *  version 1.0
+ *  Created by Sumit Malhotra 1/22/2018
+ *  Class supports JDBC Drivers and connection elements to support connection to database
+ *  Contains methods to create tables, add, update, delete, and select data in the database
+ *
  * version 1.1
  *  edited by Sharon Walker 1/23/2018
  *  removed create table functions and renamed functions to be clearer on their purpose
  * 
- *edited 02/16/2018 Sumit Malhotra
- *created tableQuantityByCategory(), tableQuanityByTotal(), methods need to be revised
+ *  version 1.1
+ *  edited 02/16/2018 Sumit Malhotra
+ *  created tableQuantityByCategory(), tableQuanityByTotal() to support
+ *  getting quantity totals from database, methods need to be revised
  *
- */
+ * edited by Sharon Walker 2/19/2018 
+ * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
+ *
+ *****************************************************************************************/
 
 import java.sql.*;
 import java.util.*;
@@ -401,10 +411,11 @@ public class InventoryDatabase
 	
 	
     public ResultSet tableQuantityByCategory() //additions by Sumit 02/16/2018 -- This needs to be revised
+	      //revised by Sharon Walker 2//19/2018
     {
     	    PreparedStatement preparedStatement = null;
     	    ResultSet resultSet = null;
-    	    String sql = "SELECT Category , SUM(QUANTITY) FROM InventoryApp GROUP BY Category;";
+    	    String sql = "SELECT Category , SUM(QTY) FROM InventoryApp where isDeleted = 0 GROUP BY Category;";
     	    
     	    try 
     	    {
@@ -423,10 +434,11 @@ public class InventoryDatabase
     }
    
     public ResultSet tableQuantityByTotal() //additions by Sumit 02/16/2018 --This needs to be revised
+	    //revised by Sharon Walker 2//19/2018
     {
     	  PreparedStatement preparedStatement = null;
     	  ResultSet resultSet = null;
-    	  String sql = "SELECT SUM(QUANTITY) FROM InventoryApp;";
+    	  String sql = "SELECT SUM(QTY) FROM InventoryApp where isDeleted = 0;";
     	 
     	   try
     	   {

@@ -1,9 +1,28 @@
-package capstone;
 
-/**
+package Inventory;
+
+/***************************** REVISION HISTORY ****************************************
+ * 
  * Created by Beth on 1/16/2018.
+ * 
+ *
+ *
+ *
+ * VERSION 1.1
+ * Updated by Sumit Malhotra on 02/15/2018
+ * removed combobox and button for sort
+ * update add method to support InventoryTable.java
+ * update edit method to support InventoryTable.java and to support dialog box for id
+ * update delete method to support InventoryTable.java and dialog box for deleting entry
+ * adding methods and gui elements for search 
+ *
  * Additions on add/edit/update/delete/search/sort by Sumit on 02/15/2018
- */
+ *
+ *
+ *
+ *
+ *****************************************************************************************/
+
 
 import java.awt.*;
 import java.awt.event.*;

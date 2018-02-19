@@ -13,6 +13,33 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+
+/****************************** REVISION HISTORY **************************************************
+ * VERSION 1.0
+ * Created by Sumit Malhotra on 02/10/2018, supports add/update/delete by ID and name and GUI customization
+ * Supports adding, updating, and deleting in database
+ *
+ * VERSION 1.1
+ * Updated by Sumit Malhotra on 02/15/2018 to support external row sorter, 
+ * Search filter, updated add, update, and delete by ID
+ * 
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ **************************************************************************************************/
+
+
+import java.util.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
