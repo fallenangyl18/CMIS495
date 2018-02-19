@@ -1,3 +1,4 @@
+
 package Inventory;
 
 /***************************** REVISION HISTORY ****************************************
@@ -15,12 +16,13 @@ package Inventory;
  * update delete method to support InventoryTable.java and dialog box for deleting entry
  * adding methods and gui elements for search 
  *
- *
+ * Additions on add/edit/update/delete/search/sort by Sumit on 02/15/2018
  *
  *
  *
  *
  *****************************************************************************************/
+
 
 import java.awt.*;
 import java.awt.event.*;
