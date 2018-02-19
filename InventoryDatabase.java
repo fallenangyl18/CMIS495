@@ -408,10 +408,11 @@ public class InventoryDatabase
 	
 	
     public ResultSet tableQuantityByCategory() //additions by Sumit 02/16/2018 -- This needs to be revised
+	      //revised by Sharon Walker 2//19/2018
     {
     	    PreparedStatement preparedStatement = null;
     	    ResultSet resultSet = null;
-    	    String sql = "SELECT Category , SUM(QUANTITY) FROM InventoryApp GROUP BY Category;";
+    	    String sql = "SELECT Category , SUM(QTY) FROM InventoryApp where isDeleted = 0 GROUP BY Category;";
     	    
     	    try 
     	    {
@@ -430,10 +431,11 @@ public class InventoryDatabase
     }
    
     public ResultSet tableQuantityByTotal() //additions by Sumit 02/16/2018 --This needs to be revised
+	    //revised by Sharon Walker 2//19/2018
     {
     	  PreparedStatement preparedStatement = null;
     	  ResultSet resultSet = null;
-    	  String sql = "SELECT SUM(QUANTITY) FROM InventoryApp;";
+    	  String sql = "SELECT SUM(QTY) FROM InventoryApp where isDeleted = 0;";
     	 
     	   try
     	   {
