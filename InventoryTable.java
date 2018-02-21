@@ -1,10 +1,4 @@
-
-/**
- * Created by Sumit on 02/10/2018, supports add/update/delete by ID and name and GUI customization, and supports database
- *add/update/delete connections 
- * Updated by Sumit on 02/15/2018 to support external row sorter, 
- * Search filter, updated add, update, and delete
- */
+package Inventory;
 
 
 import java.util.*;
@@ -113,7 +107,7 @@ public class InventoryTable extends JTable
 	    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 	    String date = String.valueOf(currentDate);
 	    
-        
+        /**
 	    DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
 	     
 	    	 public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, 
@@ -140,7 +134,7 @@ public class InventoryTable extends JTable
 	 		       	    }
 	    	      	return cell;
 	    	    }
-	    	
+	    	  **/
 	    	  /**
 	    	    public void setValue(Object value) { 
 	        	
@@ -164,7 +158,7 @@ public class InventoryTable extends JTable
 	        }**/
 	     };
 	 	    
-	     this.setDefaultRenderer(Object.class, colorRenderer);
+	 //    this.setDefaultRenderer(Object.class, colorRenderer);
 	     
 	}
     
