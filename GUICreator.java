@@ -21,7 +21,8 @@
  * in table when unneeded.
  *
  * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the user entered would
- * be picked up and displayed in the table. *
+ * be picked up and displayed in the table. Also added a "Grains" category at the request of Fred
+ * as non-perishables were felt to not be enough.
  *
  *
  *****************************************************************************************/
@@ -32,8 +33,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.sql.Timestamp;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JTable;
 
 public class GUICreator extends JFrame implements ActionListener
 {
@@ -80,7 +79,8 @@ public class GUICreator extends JFrame implements ActionListener
         Object[] colNames = {"Item Name", "ID", "Quantity", "Expiration Date", "Category", "Notes"};
         Object[][] rowData = new Object[][]
                 {
-
+                        //ER - Emptied this to remove "testing data" since Sharon is actually making
+                        //Dummy data and hooking up the Database this week (Sprint 2)
                 };
 
         jTable = new InventoryTable( rowData , colNames );
@@ -127,7 +127,7 @@ public class GUICreator extends JFrame implements ActionListener
 
 
 
-        String[] categories = {"Select Category", "Produce", "Meat", "Dairy", "Non-Perishable", "Liquids"};
+        String[] categories = {"Select Category", "Produce", "Meat", "Dairy", "Non-Perishable", "Grains", "Liquids"};
         itemCategory = new JComboBox(categories);
         JLabel categoriesLabel = new JLabel("Item Category:   ");
         itemCategory.setSelectedIndex(0);
