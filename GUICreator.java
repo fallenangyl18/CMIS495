@@ -102,7 +102,7 @@ public class GUICreator extends JFrame implements ActionListener
             	rowData.addElement( rs.getString("ItemName") );
           	    rowData.addElement( rs.getInt("InventoryID") );
          	    rowData.addElement( rs.getInt("QTY") );
-         	    rowData.addElement( (String)rs.getString("ExpireDate") );
+         	    rowData.addElement( (String)rs.getTimestamp("ExpireDate") );
              	rowData.addElement( rs.getString("category") );
          	    rowData.addElement( rs.getString("notes") );
             	initialTableRows.addElement( rowData );
