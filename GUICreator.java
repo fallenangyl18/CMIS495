@@ -321,7 +321,7 @@ public class GUICreator extends JFrame implements ActionListener
                     {
                         Timestamp theTimeIs = createTimeStamp();
                         //id generated from database, this will change
-                        jTable.addNewRow(itemEntry, 00000, quantityEntry, theTimeIs, expirationEntry, categoryEntry);
+                        jTable.addNewRow(itemEntry, 00000, quantityEntry, expirationEntry, categoryEntry);
                         System.out.println("You added " + itemEntry + " on " + theTimeIs);
                         clearFields();
                     } else
