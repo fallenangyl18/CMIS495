@@ -166,14 +166,13 @@ public class InventoryTable extends JTable
     
     
     	 
-	public void addNewRow(String name, int ID, int quantity, Timestamp date, String expiration, String category)
+	public void addNewRow(String name, int ID, int quantity, String expiration, String category)
 	{
 		model.addRow( new Object[] { name, ID, quantity, date, expiration, category } );
 		ArrayList<Object> addList = new ArrayList<Object>();
 		addList.add(name);
 		addList.add(ID);
 		addList.add(quantity);
-		addList.add(date);
 		addList.add(expiration);
 		addList.add(category);
                 
