@@ -1,5 +1,3 @@
-
-
 /***************************** REVISION HISTORY ****************************************
  *
  * Version 1.0 created by Beth 2/10/18
@@ -18,9 +16,12 @@
  *
  * Additions on add/edit/update/delete/search/sort by Sumit on 02/15/2018
  *
- * Version 1.2 on 2/22/18 Beth added "clearFields" function to clear the text fields after
- * the add and edit buttons are pressed
+ * VERSION 1.2 on 2/22/18 Beth added "clearFields" function to clear the text fields after
+ * the add and edit buttons are pressed. Sumit fixed "off by one" error with Timestamp displaying
+ * in table when unneeded.
  *
+ * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the user entered would
+ * be picked up and displayed in the table. *
  *
  *
  *****************************************************************************************/
@@ -321,7 +322,7 @@ public class GUICreator extends JFrame implements ActionListener
                     {
                         Timestamp theTimeIs = createTimeStamp();
                         //id generated from database, this will change
-                        jTable.addNewRow(itemEntry, 00000, quantityEntry, expirationEntry, categoryEntry);
+                        jTable.addNewRow(itemEntry, 00000, quantityEntry, expirationEntry, categoryEntry, notesEntry);
                         System.out.println("You added " + itemEntry + " on " + theTimeIs);
                         clearFields();
                     } else
