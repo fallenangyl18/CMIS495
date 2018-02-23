@@ -176,7 +176,7 @@ public class InventoryTable extends JTable
 		addList.add(expiration);
 		addList.add(category);
                 
-		db.insertItem(addList);
+		//db.insertItem(addList);
 		
 		
 	}
@@ -202,7 +202,7 @@ public class InventoryTable extends JTable
 				break;
 			}
 		}	
-		db.deleteByID(ID);
+	//	db.deleteByID(ID);
 		
 	}
 	
@@ -224,7 +224,7 @@ public class InventoryTable extends JTable
 		ArrayList<Object> updateList = new ArrayList<Object>();
 		updateList.add(value);
                 
-		db.updateItemByID(updateList, ID);
+	//	db.updateItemByID(updateList, ID);
 	}
 	
 	
