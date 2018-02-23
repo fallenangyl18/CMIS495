@@ -1,12 +1,40 @@
 package Inventory;
-/**
- * Created by Beth on 1/16/2018.
- */
+
+
+
+/***************************** REVISION HISTORY ****************************************
+ *
+ * Version 1.0 created by Beth 2/10/18
+ * Created all buttons, text fields, labels,
+ * GUI components, action listener, timestamp function
+ * JPanels, MAIN, action listener variables
+ *
+ *
+ * VERSION 1.1
+ * Updated by Sumit Malhotra on 02/15/2018
+ * removed combobox and button for sort
+ * update add method to support InventoryTable.java
+ * update edit method to support InventoryTable.java and to support dialog box for id
+ * update delete method to support InventoryTable.java and dialog box for deleting entry
+ * adding methods and gui elements for search
+ *
+ * Additions on add/edit/update/delete/search/sort by Sumit on 02/15/2018
+ *
+ * Version 1.2 on 2/22/18 Beth added "clearFields" function to clear the text fields after
+ * the add and edit buttons are pressed
+ *
+ *
+ *
+ *****************************************************************************************/
+
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
@@ -23,29 +51,23 @@ public class GUICreator extends JFrame implements ActionListener
     private JTextField quantityTextField;
     private JTextField expirationDateTextField;
     private JTextField notesTextField;
-    private JButton sortButton;
-    private JComboBox sortByWhat;
     private JComboBox itemCategory;
+
+    private JButton searchBtn;
+    private JTextField searchTF;
+    private JLabel searchLbl;
     DataPanel data = new DataPanel();
-
-    InventoryDatabase database = new InventoryDatabase();
-
-    JTable jTable = new JTable();
-    DefaultTableModel model;
-
+    InventoryTable jTable;
     //creating an enumeration for the sort types
-    private enum sortEntries { NAME, CATEGORY, EXPIRATION };
-
-    //InventoryTable jTable = new InventoryTable();
 
     //Create the GUI
-    public GUICreator()
+    public GUICreator() throws SQLException
     {
         //setting GUI base information
         super("Pantry Inventory");
         setLayout(new BorderLayout());
         setBackground(Color.white);
-        setSize(850, 550);
+        setSize(900, 650);
 
         //Creating a "container" for the panels to sit in
         JPanel containerPanel = new JPanel();
@@ -59,12 +81,17 @@ public class GUICreator extends JFrame implements ActionListener
         //Setting the JComboBox options for the dropdown
         //Feel free to add more as we need
 
-        Object[] colNames = {"Item Name", "Item Quantity", "Expiration Date", "Item Category", "Notes"};
-        model = new DefaultTableModel();
-        model.setColumnIdentifiers(colNames);
-        jTable.setModel(model);
-        jTable.setBackground(Color.white);
-        jTable.setRowHeight(20);
+        InventoryDatabase db = new InventoryDatabase();
+       
+    	ResultSet rs = db.getAllActiveItems();
+    	
+        Object[] colNames = {"Item Name", "ID", "Quantity", "Expiration Date", "Category", "Notes"};
+        Object[][] rowData = new Object[][]
+                {
+
+                };
+
+        jTable = new InventoryTable( rowData , colNames );
 
         //Creating a JLabel for the menu
         JLabel menuLabel = new JLabel("Menu: ");
@@ -76,12 +103,11 @@ public class GUICreator extends JFrame implements ActionListener
         editButton.setToolTipText("Edit existing items in the database.");
         editButton.addActionListener(this);
         removeButton = new JButton("Remove");
-        removeButton.setToolTipText("Remove items from the databse.");
+        removeButton.setToolTipText("Remove items from the database.");
         removeButton.addActionListener(this);
-        sortButton = new JButton("Sort");
-        sortButton.setToolTipText("Sort items by category.");
-        sortButton.addActionListener(this);
 
+        searchTF = new JTextField();
+        searchLbl = new JLabel("Search");
         //Creating text field objects
         itemNameTextField = new JTextField();
         itemNameTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemNameTextField.getPreferredSize().height));
@@ -106,11 +132,8 @@ public class GUICreator extends JFrame implements ActionListener
         expirationDateTextField.setText("MM-DD-YYYY");
         JLabel expirationDateLabel = new JLabel(" Expiration Date: ");
 
-        //creating combobox objects with the selections
-        String[] sortOptions = {"Select", "Item Name", "Category", "Expiration Date"};
-        sortByWhat = new JComboBox(sortOptions);
-        JLabel sortLabel = new JLabel("Sort By:   ");
-        sortByWhat.setSelectedIndex(0);
+
+
 
         String[] categories = {"Select Category", "Produce", "Meat", "Dairy", "Non-Perishable", "Liquids"};
         itemCategory = new JComboBox(categories);
@@ -178,13 +201,12 @@ public class GUICreator extends JFrame implements ActionListener
         notesTextPanel.add(notesTextField);
         notesTextPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
         leftPanel.add(notesTextPanel);
-    
+
+
         //JPanel for sort dropdown
         JPanel sortComboPanel = new JPanel();
         sortComboPanel.setLayout(new BoxLayout(sortComboPanel, BoxLayout.X_AXIS));
         sortComboPanel.setMaximumSize(new Dimension(250, 25));
-        sortComboPanel.add(sortLabel);
-        sortComboPanel.add(sortByWhat);
         sortComboPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
         leftPanel.add(sortComboPanel);
 
@@ -194,11 +216,10 @@ public class GUICreator extends JFrame implements ActionListener
         buttonsPanel.add(addButton);
         buttonsPanel.add(editButton);
         buttonsPanel.add(removeButton);
-        buttonsPanel.add(sortButton);
         leftPanel.add(buttonsPanel);
 
 
-        //Adding all of hte components that are in the left panel into the overall container panel.
+        //Adding all of the components that are in the left panel into the overall container panel.
         containerPanel.add(leftPanel);
 
         //Creating the right panel that holds our inventory
@@ -207,13 +228,26 @@ public class GUICreator extends JFrame implements ActionListener
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
         rightPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
 
+
         //Jpanel to hold the large display text area
         JPanel inventoryDisplayPanel = new JPanel();
         inventoryDisplayPanel.setLayout(new BoxLayout(inventoryDisplayPanel, BoxLayout.Y_AXIS));
         inventoryDisplayPanel.add(invDisplayLabel);
         inventoryDisplayPanel.add(invDisplayPane);
+        JPanel searchPnl = new JPanel();
+
+        searchBtn = new JButton("Search");
+        searchBtn.addActionListener(this);
+        searchPnl.add(searchLbl);
+        searchTF.setPreferredSize(new Dimension(250,30));
+        searchPnl.add(searchTF);
+        searchPnl.add(searchBtn);
+
+        inventoryDisplayPanel.add(searchPnl);
         rightPanel.add(inventoryDisplayPanel);
         containerPanel.add(rightPanel);
+
+        add(data, BorderLayout.SOUTH);
     }
 
     private Timestamp createTimeStamp()
@@ -222,116 +256,138 @@ public class GUICreator extends JFrame implements ActionListener
         return currentTime;
     }
 
+    private void clearFields()
+    {
+        itemNameTextField.setText("");
+        quantityTextField.setText("");
+        expirationDateTextField.setText("");
+        itemCategory.setSelectedIndex(0);
+        notesTextField.setText("");
+
+    }
+
     //Coding action listener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        try
 
+        if(e.getSource() == searchBtn)
         {
-            //Getting the entries from the GUI's text fields, that the user entered.
-            String itemEntry = itemNameTextField.getText();
-            int quantityEntry = Integer.parseInt(quantityTextField.getText());
-            String expirationEntry = expirationDateTextField.getText();
-            String categoryEntry = itemCategory.getSelectedItem().toString();
-            String notesEntry = notesTextField.getText();
-            Object[] row = new Object[5];
-
-            if (e.getSource() == addButton)
+            jTable.searchFilter(searchTF.getText());
+        }
+        else  if (e.getSource() == removeButton)
+        {
+            //elements to remove by
+            JComboBox deleteSelection = new JComboBox(new String[] {"Name", "ID", "Expiration Date"});
+            //fields for the JOptionPane
+            Object[] fields = {"Select a field to delete by:\n **NOTICE** \nDeleting by name or Expiration date\nwill delete multiple entries", deleteSelection};
+            Timestamp theTimeIs = createTimeStamp();
+            //Dialog Box
+            try
             {
-                if (itemEntry != null && quantityEntry != 0 && expirationEntry != null && !categoryEntry.equals("Select Category"))
-                {
-                    row[0] = itemEntry;
-                    row[1] = quantityEntry;
-                    row[2] = expirationEntry;
-                    row[3] = categoryEntry;
-                    row[4] = notesEntry;
-                    model.addRow(row);
 
-                    Timestamp theTimeIs = createTimeStamp();
-                    System.out.println("You added " + itemEntry + " on " + theTimeIs);
-                    JOptionPane.showMessageDialog(null, "You have successfully added " + quantityEntry + " " + itemEntry + "(s) to the the database.");
-                } else
-                {
-                    JOptionPane.showMessageDialog(null, "Please fill out all fields in this form.");
-                }
-            } else if (e.getSource() == editButton) {
-                if (itemEntry != null && quantityEntry != 0 && expirationEntry != null)
-                {
-                    //do something else
-                    System.out.println("You hit the edit button.");
-                    Timestamp theTimeIs = createTimeStamp();
-                    System.out.println("You edited " + itemEntry + " on " + theTimeIs);
-                    JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
-                } else
-                {
-                    JOptionPane.showMessageDialog(null, "Please fill out all of the information in this form!");
-                }
+                String value = JOptionPane.showInputDialog(null, fields, "Delete Item", JOptionPane.OK_CANCEL_OPTION);
 
-            } else if (e.getSource() == removeButton)
-            {
-                //do remove stuff
-                int i = jTable.getSelectedRow();
-                if (i >= 0)
+                //if deleting by name
+                if ( deleteSelection.getSelectedItem().equals("Name") && !value.equals("") )
                 {
-                    model.removeRow(i);
+                    jTable.deleteRowByName(value);
                     JOptionPane.showMessageDialog(null, "You have successfully removed item(s) from the database.");
-                    Timestamp theTimeIs = createTimeStamp();
-                    System.out.println("You removed an item from the table on " + theTimeIs);
+                    //  System.out.println("You removed an item from the table on " + theTimeIs);
+                }
+                else if( deleteSelection.getSelectedItem().equals("ID") && !value.equals("") )///if deleting by id
+                {
+                    jTable.deleteRowByID( Integer.parseInt( value ) );
+                    JOptionPane.showMessageDialog(null, "You have successfully removed item(s) from the database.");
+                    // System.out.println("You removed an item from the table on " + theTimeIs);
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(null, "There was an error deleting this entry.");
+                    JOptionPane.showMessageDialog(null, "There was an error deleting this entry. Please make sure all fields are filled.");
                 }
-
-            } else
-                {
-                //the source is the sort button.
-                sortEntries whatIsSelected = dropDownMenu(sortByWhat.getSelectedItem().toString());
-                switch (whatIsSelected)
-                {
-                    case NAME:
-                        //sort by name functin is called
-                        break;
-                    case CATEGORY:
-                        //sort by category function is called
-                        break;
-                    case EXPIRATION:
-                        //sort by expiration date is called
-                        break;
-                }
-
-                //I assume we don't want the timestamp when we are sorting??
-                System.out.println("You hit the sort button.");
             }
-        }
-        catch (NumberFormatException ex)
-        {
+            catch(NullPointerException x)
+            {
 
-            JOptionPane.showMessageDialog(null, "Error: Please make sure all fields are filled out before attempting to " +
-                    "add an item to the database. Error message: " + ex.getMessage());
+            }
+
         }
+        else
+        {
+            try
+            {
+                //Getting the entries from the GUI's text fields, that the user entered.
+                String itemEntry = itemNameTextField.getText();
+                int quantityEntry = Integer.parseInt(quantityTextField.getText());
+                String expirationEntry = expirationDateTextField.getText();
+                String categoryEntry = itemCategory.getSelectedItem().toString();
+                String notesEntry = notesTextField.getText();
+                Object[] row = new Object[5];
+
+                if ( e.getSource() == addButton )
+                {
+                    if (itemEntry != null && quantityEntry != 0 && expirationEntry != null && !categoryEntry.equals("Select Category"))
+                    {
+                        Timestamp theTimeIs = createTimeStamp();
+                        //id generated from database, this will change
+                        jTable.addNewRow(itemEntry, 00000, quantityEntry, theTimeIs, expirationEntry, categoryEntry);
+                        System.out.println("You added " + itemEntry + " on " + theTimeIs);
+                        clearFields();
+                    } else
+                    {
+                        JOptionPane.showMessageDialog(null, "Please fill out all fields in this form.");
+                    }
+                }
+                else if (e.getSource() == editButton)
+                {
+                    if (itemEntry != null && quantityEntry != 0 && expirationEntry != null)
+                    {
+                        Timestamp theTimeIs = createTimeStamp();
+                        //Dialog Box
+                        String value = JOptionPane.showInputDialog("Enter the ID of the Item you would like to Update:");
+
+                        //if update by name
+                        if ( !value.equals("") )
+                        {
+                            row[0] = itemEntry;
+                            row[1] = quantityEntry;
+                            row[2] = expirationEntry;
+                            row[3] = categoryEntry;
+                            row[4] = notesEntry;
+                            jTable.updateRowByID (row, Integer.parseInt( value ) );
+                            JOptionPane.showMessageDialog(null, "You have successfully updated item(s) in the database.");
+                            clearFields();
+                        }
+                        else
+                        {
+                            JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
+                        }
+                        System.out.println("You edited " + itemEntry + " on " + theTimeIs);
+                        //JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "Please fill out all of the information in this form!");
+                    }
+                }
+                else
+                {
+                }
+            }
+            catch (NumberFormatException ex)
+            {
+                JOptionPane.showMessageDialog(null, "Error: Please make sure all fields are filled out before attempting to " +
+                        "add an item to the database. Error message: " + ex.getMessage());
+            }
+
+        }
+
     }
 
-
-    //function that returns an enumeration of the sort entries
-    //based on the selected string that is in the combobox.
-    public sortEntries dropDownMenu(String selectedItem)
-    {
-        if (selectedItem.equals("Item Name"))
-        {
-            return sortEntries.NAME;
-        }
-        else if (selectedItem.equals("Category"))
-        {
-            return sortEntries.CATEGORY;
-        }
-        return sortEntries.EXPIRATION;
-    }
 
     //MAIN FUNCTION, create new GUI object and set visible to true
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws SQLException
+    {    	
         GUICreator showTheGui = new GUICreator();
         showTheGui.setVisible(true);
     }
