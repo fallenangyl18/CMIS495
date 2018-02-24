@@ -1,11 +1,7 @@
-import java.util.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+package Inventory;
 
 
-/****************************** REVISION HISTORY **************************************************
+/****************************** REVISION HISTORY **********************************************************
  * VERSION 1.0
  * Created by Sumit Malhotra on 02/10/2018, supports add/update/delete by ID and name and GUI customization
  * Supports adding, updating, and deleting in database
@@ -20,9 +16,15 @@ import java.awt.event.MouseListener;
  * to include a string for notes since they were not in there and not being displayed in the table at all.
  *
  *
+ * VERSION 1.3
+ * Updated by Sumit Malhotra on 02/24/2018, created isCellEditable method for when table is being edited within 
+ *table model, and support only selected cell to be edited, created selectRow() and getPreviousRow() 
+ * as helper methods for editing selected cells, supports Cell Renderer for coloring rows based on expiration date
+ * and also allowEditCell(), added methods deleteRowBySelection to support
+ * deleted selected rows and updateRowBySelection() to support updating to database, added prepareRenderer() 
+ * to support color for selected rows, Updated comparators to support comparing integers for edited cells
  *
- *
- **************************************************************************************************/
+ *****************************************************************************************************************/
 
 
 import java.util.*;
