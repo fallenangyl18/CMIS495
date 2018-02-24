@@ -76,6 +76,56 @@ public class GUICreator extends JFrame implements ActionListener
 
         //Setting the JComboBox options for the dropdown
         //Feel free to add more as we need
+        
+        
+       /******************* DATABASE STARTUP ENTRIES ******************************   
+    	
+    	Vector columnNames = new Vector();
+    	columnNames.addElement("Item Name");
+    	columnNames.addElement("ID");
+    	columnNames.addElement("Quantity");
+    	columnNames.addElement("Expiration Date");
+    	columnNames.addElement("Category");
+    	columnNames.addElement("Notes");
+    	
+    Vector<Vector> initialTableRows = new Vector<Vector>();
+    	
+    	try
+    	{
+        rs = db.getAllActiveItems();
+    	
+        	while( rs.next() )
+       	{
+    	        Vector<Object> rowData = new Vector<Object>();
+           	rowData.addElement(rs.getString("ItemName"));
+          	rowData.addElement(rs.getInt("InventoryID"));
+         	rowData.addElement(rs.getInt("QTY"));
+         	rowData.addElement((String)rs.getString("ExpireDate"));
+         	rowData.addElement(rs.getString("category"));
+         	rowData.addElement(rs.getString("notes"));
+         	initialTableRows.addElement(rowData);
+         	
+         	if(rs.isLast())
+         	{
+         	    int newID = rs.getInt("InventoryID");
+         	}
+         	add(newID++);
+         	
+    	}
+    	}
+    	catch(SQLException e)
+    	{
+    		e.printStackTrace();
+    	}
+    	finally
+    	{
+    		
+    	}
+
+    	
+        jTable = new InventoryTable( initialTableRows , columnNames );   
+
+        ***************************** END DATABASE STARTUP ENTRIES****************************************/
 
         Object[] colNames = {"Item Name", "ID", "Quantity", "Expiration Date", "Category", "Notes"};
         Object[][] rowData = new Object[][]
