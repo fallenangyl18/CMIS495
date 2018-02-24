@@ -22,7 +22,8 @@
  *
  * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the user entered would
  * be picked up and displayed in the table. Also added a "Grains" category at the request of Fred
- * as non-perishables were felt to not be enough.
+ * as non-perishables were felt to not be enough. toLowerCase all strings for fast searching to make
+ * sure we don't miss stuff.
  *
  *
  *****************************************************************************************/
@@ -52,11 +53,6 @@ public class GUICreator extends JFrame implements ActionListener
     private JTextField searchTF;
     private JLabel searchLbl;
     DataPanel data = new DataPanel();
-    
-    //InventoryDatabase db = new InventoryDatabase();
-    //ResultSet rs = null;
-    
-    
     InventoryTable jTable;
     //creating an enumeration for the sort types
 
@@ -80,47 +76,6 @@ public class GUICreator extends JFrame implements ActionListener
 
         //Setting the JComboBox options for the dropdown
         //Feel free to add more as we need
-        
-        /***************************** STARTUP DATABASE ENTRIES ******************************* to be revised
-        Vector columnNames = new Vector();
-    	columnNames.addElement("Item Name");
-    	columnNames.addElement("ID");
-    	columnNames.addElement("Quantity");
-    	columnNames.addElement("Expiration Date");
-    	columnNames.addElement("Category");
-    	columnNames.addElement("Notes");
-    	
-       Vector<Vector> initialTableRows = new Vector<Vector>();
-    	
-    	try
-    	{
-            rs = db.getAllActiveItems();
-    	
-        	while( rs.next() )
-         	{
-    	        Vector<Object> rowData = new Vector<Object>();
-            	rowData.addElement( rs.getString("ItemName") );
-          	    rowData.addElement( rs.getInt("InventoryID") );
-         	    rowData.addElement( rs.getInt("QTY") );
-         	    rowData.addElement( (String.valueOf(rs.getTimestamp("ExpireDate")) );
-             	rowData.addElement( rs.getString("category") );
-         	    rowData.addElement( rs.getString("notes") );
-            	initialTableRows.addElement( rowData );
-    	}
-    	}
-    	catch(SQLException e)
-    	{
-    		e.printStackTrace();
-    	}
-    	finally
-    	{
-    		
-    	}
-        jTable = new InventoryTable( initialTableRows , columnNames );  
-        
-        ***************************** END DATABASE STARTUP ENTRIES *********************************************/
-        
-
 
         Object[] colNames = {"Item Name", "ID", "Quantity", "Expiration Date", "Category", "Notes"};
         Object[][] rowData = new Object[][]
@@ -355,11 +310,11 @@ public class GUICreator extends JFrame implements ActionListener
             try
             {
                 //Getting the entries from the GUI's text fields, that the user entered.
-                String itemEntry = itemNameTextField.getText();
-                int quantityEntry = Integer.parseInt(quantityTextField.getText());
-                String expirationEntry = expirationDateTextField.getText();
-                String categoryEntry = itemCategory.getSelectedItem().toString();
-                String notesEntry = notesTextField.getText();
+                String itemEntry = itemNameTextField.getText().toLowerCase();
+                int quantityEntry = Integer.parseInt(quantityTextField.getText().toLowerCase());
+                String expirationEntry = expirationDateTextField.getText().toLowerCase();
+                String categoryEntry = itemCategory.getSelectedItem().toString().toLowerCase();
+                String notesEntry = notesTextField.getText().toLowerCase();
                 Object[] row = new Object[5];
 
                 if ( e.getSource() == addButton )
