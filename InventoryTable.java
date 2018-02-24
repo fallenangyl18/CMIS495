@@ -27,10 +27,12 @@ import java.awt.event.MouseListener;
  *
  *
  *
- *
- *
- *
- *
+ *VERSION 1.3
+ * Updated by Sumit Malhotra on 02/24/2018, created isCellEditable method for when table is being edited within table model,
+ * and support only selected cell to be edited, created selectRow() and getPreviousRow() as helper methods for editing selected cells, supports Cell Renderer for coloring rows based on expiration date
+ * and also allowEditCell(), added methods deleteRowBySelection to support
+ * deleted selected rows and updateRowBySelection() to support updating to database, added prepareRenderer() to support color 
+ * for selected rows, Updated comparators to support comparing integers for edited cells
  **************************************************************************************************/
 
 
