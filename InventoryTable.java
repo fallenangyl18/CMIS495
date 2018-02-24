@@ -41,151 +41,140 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import java.util.Vector;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.*;
 
-//add
-//delete
-//sort
-//search
+
 
 
 public class InventoryTable extends JTable 
 {
-    private DefaultTableModel model;
-    private TableRowSorter<TableModel> sorter;
+    private DefaultTableModel model; //table model
+    private TableRowSorter<TableModel> sorter; //row sorter
+    private boolean cellUpdate = false; //cell edit variable
     //private InventoryDatabase db;
-    private ResultSet rs;
-    private JTextField searchInput = new JTextField();
+    private ResultSet rs;  //database result sets
+    private int currentRow = 00; //currentRow
+    private int previous = 00;   //previous row 
     
     
-    InventoryTable(Vector<Object> rowData, Vector<Object> columnNames)
+    InventoryTable()
     {
-    	
     	
     }
     
     
-    InventoryTable( Object[][] rowData , Object[] columnNames )
+    InventoryTable( Vector<Vector> rowData , Vector columnNames )
 	{
 		super();
-		model = new DefaultTableModel(rowData, columnNames);
-		this.setRowHeight(30);
 		
-        this.setCellSelectionEnabled(true);  //no cell selection
+		
+		model = new DefaultTableModel(rowData, columnNames) {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			//sets the select row to editable based on if current table is being edited and ensures no other rows are editable
+			@Override
+			public boolean isCellEditable(int row, int column)  
+			{
+				if( currentRow == 00 && cellUpdate == true)
+				{
+					currentRow = row;
+					selectRow(currentRow);
+				}
+				if( currentRow == getSelectedRow() && cellUpdate == true )
+				{
+					return true;
+				}
+				if( currentRow != getSelectedRow() && cellUpdate == true )
+				{
+					getPreviousRow();
+                    JOptionPane.showMessageDialog(editorComp, this, "Please Commit before moving to another cell", column); 
+                    cellUpdate = false;
+				    return false;
+				}
+				
+				return false;
+			}
+		};
+		
+		//db = new InventoryDatabase();
+		this.setRowHeight(30);
+		this.setRowSelectionAllowed(true);
+		this.setFocusable(false);
         this.getTableHeader().setReorderingAllowed(false); //columns are stationary
-        this.setEnabled(false); //cells are not editable
-		this.setModel(model); //sets column headers and rows
+		this.setModel(model); // set the table model
+	    this.setSelectionForeground(Color.BLACK);
+	    //sets column headers and rows
 	    this.setShowGrid(true); //shows gridlines
-	    this.setGridColor(Color.BLACK);
-	    
-	    sorter = new TableRowSorter<TableModel>(model);
+	    this.setGridColor(Color.BLACK);  //set gridline colors
+	    sorter = new TableRowSorter<TableModel>(model); //create row sorter
 	   
-	    sorter.setComparator(1, new Comparator<Integer>() 
+	    sorter.setComparator(1, new Comparator<Object>() //comparator for sorter when comparing column 1
 	    {
 			@Override
-			public int compare(Integer o1, Integer o2) 
+			public int compare(Object o1, Object o2) 
 			{
-				return o1.compareTo(o2);
+				return (Integer.valueOf(String.valueOf(o1))).compareTo(Integer.valueOf(String.valueOf(o2)));
 			}
 	    });
-	    
-	    sorter.setComparator(2, new Comparator<Integer>() 
-	    {
-			@Override
-			public int compare(Integer o1, Integer o2) 
-			{
-				return o1.compareTo(o2);
-			}
-	    });
-	    
-	    this.setRowSorter(sorter);
-	    //db = new InventoryDatabase()
-	    
-	    Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-	    String date = String.valueOf(currentDate);
-	    
-        
-	    DefaultTableCellRenderer colorRenderer = new DefaultTableCellRenderer() {
-	     
-	    	 public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, 
-	    	    		boolean hasFocus, int row, int column)
-	    	    {
-	    	    	    Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-	    	    	    
-	 	        	   for(int i = 0; i < model.getRowCount(); i++)
-	 		       	    {
-	 		       	    	    int val = date.compareTo( String.valueOf( cell ) );
-	 		       	    	    
-	 		       	    	    if( val == -1)
-	 		       	    	    {
-	 		       	    	     
-	 		       	    	      	cell.setBackground(Color.YELLOW);
-	 		   	               
-	 		       	    	    }
-	 		       	    	    else if(val == 1) 
-	 		       	    	    {
-	 		       	    	    cell.setBackground(Color.YELLOW);
-	 		       	    	 
-	 		       	    	    }
-	 		       	    	  
-	 		       	    }
-	    	      	return cell;
-	    	    }
-	    	
-	    	  /**
-	    	    public void setValue(Object value) { 
-	        	
-	        	   for(int i = 0; i < model.getRowCount(); i++)
-	       	    {
-	       	    	    int val = date.compareTo( String.valueOf( value ) );
-	       	    	    if( val == -1)
-	       	    	    {
-	       	    	     
-	       	    	    	this.setBackground(Color.YELLOW);
-	   	               
-	       	    	    }
-	       	    	    else if(val == 1) 
-	       	    	    {
-	       	    	     	
-	       	    	  
-	       	    	    }
-	       	    	    setText(value.toString());
-	       	    }
 	 
-	        }**/
-	     };
-	 	    
-	     this.setDefaultRenderer(Object.class, colorRenderer);
-	     
+	    sorter.setComparator(2, new Comparator<Object>() //comparator for sorter when comparing column 2
+	    {
+			@Override
+			public int compare(Object o1, Object o2) 
+			{
+				return (Integer.valueOf(String.valueOf(o1))).compareTo(Integer.valueOf(String.valueOf(o2)));
+			}
+	    });
+	    
+	    this.setRowSorter(sorter); //sets the row sorter for the table
+	    this.convertColumnIndexToModel(3); 
+	    this.setDefaultRenderer(Object.class, new CellRenderer()); //sets the renderer for determining cell colors
 	}
     
-   
+    //this method sets the row when editing
+    public void selectRow(int row)
+    {
+    	   previous = row;
+    }
     
+    //this method gets the row selected when editing
+    public void getPreviousRow()
+    {
+   	     this.getSelectionModel().setSelectionInterval(previous, previous);
+    }
     
-    	 
-	public void addNewRow(String name, int ID, int quantity, Timestamp date, String expiration, String category)
+    //this method updates the data table with a new entry
+    //and also inserts the entry into the database
+    
+	public void addNewRow(String name, int ID, int quantity, String expiration, String category, String notes, Timestamp lastUpdated)
 	{
-		model.addRow( new Object[] { name, ID, quantity, date, expiration, category } );
+		model.addRow( new Object[] { name, ID, quantity, expiration, category, notes } );
 		ArrayList<Object> addList = new ArrayList<Object>();
 		addList.add(name);
-		addList.add(ID);
 		addList.add(quantity);
-		addList.add(date);
 		addList.add(expiration);
-		addList.add(category);
-                
-		db.insertItem(addList);
-		
-		
+		addList.add(lastUpdated);
+		addList.add(lastUpdated);
+		addList.add(0);
+		addList.add(notes);
+		addList.add(category);        
+	    //db.insertItem(addList);	
 	}
 	
 	public void deleteRowByName( String name )
@@ -208,10 +197,24 @@ public class InventoryTable extends JTable
 				model.removeRow(i);
 				break;
 			}
-		}	
-		db.deleteByID(ID);
-		
+		}		
 	}
+	
+	//this method is used to delete an entry from the database
+	//it checks if a row is selected, and then deletes the selected row from
+	//the database and the data table
+	public void deleteRowBySelection()
+	{
+		if(!this.getSelectionModel().isSelectionEmpty())
+		{
+			//db.deleteItemByID( (int)this.getValueAt(this.getSelectedRow(), 1));
+			model.removeRow(this.getSelectedRow());
+			this.getSelectionModel().clearSelection(); 
+			return;
+		}
+		JOptionPane.showMessageDialog(this, "Please select a row to delete");
+	}
+	
 	
 	public void updateRowByID(Object[] value, int ID)
 	{
@@ -231,7 +234,7 @@ public class InventoryTable extends JTable
 		ArrayList<Object> updateList = new ArrayList<Object>();
 		updateList.add(value);
                 
-		db.updateItemByID(updateList, ID);
+     	//	db.updateItemByID(updateList, ID);
 	}
 	
 	
@@ -266,17 +269,64 @@ public class InventoryTable extends JTable
 		}	
 	}
 	
+	//sets cellUpdate to be true when a cell is selected
+	public void allowEditCells()
+	{
+		if(!this.getSelectionModel().isSelectionEmpty())
+		{
+		    cellUpdate = true;
+		}
+	}
 	
+	//updates the database with input entries for the selected row
+	//
+	public void updateRowBySelection(Timestamp lastUpdated)
+	{
+		ArrayList<Object> updateList = new ArrayList<Object>();
+
+		if( cellUpdate = true )
+		{
+			cellUpdate = false;
+		}
+		    currentRow = 00;
+			JTable table = this;
+		    int ID = (int)this.getValueAt( previous, 1 );
+			updateList.add( this.getValueAt( previous , 0 ) );
+			updateList.add( this.getValueAt( previous , 2 ) );
+			updateList.add( this.getValueAt( previous , 3 ) );
+			updateList.add(lastUpdated);
+			updateList.add(0);
+			updateList.add( this.getValueAt( previous , 5 ) );
+			updateList.add( this.getValueAt( previous , 4 ) );
+			//db.updateItemByID(updateList, ID);
+		
+	}
+	
+	//Sets selected rows to have a background and foreground color
+   public Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+  	        Component c = super.prepareRenderer(renderer, row, col);
+  	        if (this.isCellSelected(row, col)) {
+  	            c.setBackground(Color.BLUE);
+  	            c.setForeground(Color.WHITE);
+  	        }
+  	        else
+  	        {
+  	        	   c.setForeground(Color.BLACK);
+  	        }
+  	        return c;
+    }
+	
+	//creates a search filter for searching the table
 	public void searchFilter(String filter)
 	{
 		if(!filter.equals(""))
 		{
-		    sorter.setRowFilter(RowFilter.regexFilter(filter));
+		    sorter.setRowFilter(RowFilter.regexFilter(filter.toLowerCase()));
+		  
 		}
 		else if( filter.equals("") )
 		{
 			sorter.setRowFilter(null);
 		}
-	}
-	    
+	}	    
 }
