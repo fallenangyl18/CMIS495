@@ -39,7 +39,6 @@ import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,8 +64,9 @@ public class GUICreator extends JFrame implements ActionListener {
    
     JTable jtable = new JTable();
     DataPanel data = new DataPanel();
-    // InventoryTable jTable;
-    //creating an enumeration for the sort types
+    private final JTextField inventoryIDTxt;
+    private JButton okButton;
+   
 
     //Create the GUI
     public GUICreator() throws SQLException 
@@ -90,16 +90,18 @@ public class GUICreator extends JFrame implements ActionListener {
         ResultSet rs = db.getAllActiveItems();
 
          jtable = new JTable(buildTableModel(rs));
-        //jtable = new JTable()
+        
         //Creating a JLabel for the menu
-        JLabel menuLabel = new JLabel("Menu: ");
+        JLabel menuLabel = new JLabel("Inventory: ");
         //creating the buttons and adding their action listeners
-        addButton = new JButton("Add");
+        addButton = new JButton("Add");        
         addButton.setToolTipText("Add items to database.");
         addButton.addActionListener(this);
         editButton = new JButton("Edit");
         editButton.setToolTipText("Edit existing items in the database.");
         editButton.addActionListener(this);
+        okButton = new JButton("OK");
+        okButton.addActionListener(this);
         removeButton = new JButton("Remove");
         removeButton.setToolTipText("Remove items from the databse.");
         removeButton.addActionListener(this);
@@ -107,6 +109,12 @@ public class GUICreator extends JFrame implements ActionListener {
         searchTF = new JTextField();
         searchLbl = new JLabel("Search");
         //Creating text field objects
+        
+        inventoryIDTxt = new JTextField();
+        inventoryIDTxt.setMaximumSize(new Dimension(Integer.MAX_VALUE, inventoryIDTxt.getPreferredSize().height));
+        inventoryIDTxt.setEditable(true);
+        JLabel inventoryIDLabel = new JLabel("InventoryID: ");
+        
         itemNameTextField = new JTextField();
         itemNameTextField.setMaximumSize(new Dimension(Integer.MAX_VALUE, itemNameTextField.getPreferredSize().height));
         itemNameTextField.setEditable(true);
@@ -157,13 +165,22 @@ public class GUICreator extends JFrame implements ActionListener {
         menuLabelHolder.setBorder(new EmptyBorder(10, 5, 15, 5));
         leftPanel.add(menuLabel);
 
+         //creating a new JPanel for the item name text area and label
+        JPanel itemIDInfoPanel = new JPanel();
+        itemIDInfoPanel.setLayout(new BoxLayout(itemIDInfoPanel, BoxLayout.Y_AXIS));
+        itemIDInfoPanel.add(inventoryIDLabel);
+        itemIDInfoPanel.add(inventoryIDTxt);
+        itemIDInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
+        leftPanel.add(itemIDInfoPanel);
+        
         //creating a new JPanel for the item name text area and label
         JPanel itemTextInfoPanel = new JPanel();
         itemTextInfoPanel.setLayout(new BoxLayout(itemTextInfoPanel, BoxLayout.Y_AXIS));
         itemTextInfoPanel.add(itemNameLabel);
         itemTextInfoPanel.add(itemNameTextField);
         itemTextInfoPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
-        leftPanel.add(itemTextInfoPanel);
+        leftPanel.add(itemTextInfoPanel);    
+       
 
         //Panel to hold all of the quantity objects
         JPanel quantityTextInfoPanel = new JPanel();
@@ -209,6 +226,7 @@ public class GUICreator extends JFrame implements ActionListener {
         buttonsPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
         buttonsPanel.add(addButton);
         buttonsPanel.add(editButton);
+        buttonsPanel.add(okButton);
         buttonsPanel.add(removeButton);
         leftPanel.add(buttonsPanel);
 
@@ -263,34 +281,26 @@ public class GUICreator extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
          
             if (e.getSource() == searchBtn) {
-                //      jtable.searchFilter(searchTF.getText());
-                //  }
-                // else  if (e.getSource() == removeButton)
-                // {
-                //elements to remove by
+            
                 JComboBox deleteSelection = new JComboBox(new String[]{"Name", "ID", "Expiration Date"});
-                //fields for the JOptionPane
+            
                 Object[] fields = {"Select a field to delete by:\n **NOTICE** \nDeleting by name or Expiration date\nwill delete multiple entries", deleteSelection};
-                Timestamp theTimeIs = createTimeStamp();
-                //Dialog Box
+          
                 try {
 
                     String value = JOptionPane.showInputDialog(null, fields, "Delete Item", JOptionPane.OK_CANCEL_OPTION);
 
                     if (deleteSelection.getSelectedItem().equals("ID") && !value.equals(""))///if deleting by id
                     {
-                        // jtable.deleteRowByID( Integer.parseInt( value ) );
-                        //  JOptionPane.showMessageDialog(null, "You have successfully removed item(s) from the database.");
-                        // System.out.println("You removed an item from the table on " + theTimeIs);
+                      
                     } else {
                         JOptionPane.showMessageDialog(null, "There was an error deleting this entry. Please make sure all fields are filled.");
                     }
                 } catch (NullPointerException x) {
 
                 }
-
-            } else {
-                if (e.getSource() == addButton) {
+            } 
+            if (e.getSource() == addButton) {
 
                    // ArrayList<String> row = new ArrayList<>();
                    // row.add(itemNameTextField.getText());
@@ -304,12 +314,11 @@ public class GUICreator extends JFrame implements ActionListener {
                     String expirationEntry = expirationDateTextField.getText().toLowerCase();
                     String categoryEntry = itemCategory.getSelectedItem().toString().toLowerCase();
                     String notesEntry = notesTextField.getText().toLowerCase();
+                    
                     if ((itemEntry !=  "") && quantityEntry != 0 && expirationEntry != "") {
-                        Timestamp theTimeIs = createTimeStamp();
+                       // Timestamp theTimeIs = createTimeStamp();
                         InventoryDatabase db = new InventoryDatabase();
-                        db.insertItem(itemEntry,quantityEntry, expirationEntry,categoryEntry, notesEntry, theTimeIs);
-                        // jTable.addNewRow(itemEntry, 00000, quantityEntry, expirationEntry, categoryEntry, notesEntry);
-                        // System.out.println("You added " + itemEntry + " on " + theTimeIs);
+                        db.insertItem(itemEntry,quantityEntry, expirationEntry,categoryEntry, notesEntry);                 
                         clearFields();
                         ResultSet refresh;
                         try {
@@ -322,40 +331,52 @@ public class GUICreator extends JFrame implements ActionListener {
                     } else {
                         JOptionPane.showMessageDialog(null, "Please fill out all fields in this form.");
                     }
+             }
 
-                    if (jtable.hasFocus()) {
-                        int editThisRow = jtable.getSelectedRow();
-                        String inventoryID = jtable.getModel().getValueAt(editThisRow, 1).toString();
-                        itemNameTextField.setText(jtable.getModel().getValueAt(editThisRow, 2).toString());
-                        quantityTextField.setText(jtable.getModel().getValueAt(editThisRow, 3).toString());
-                        expirationDateTextField.setText(jtable.getModel().getValueAt(editThisRow, 4).toString());
-                        itemCategory.setSelectedItem(jtable.getModel().getValueAt(editThisRow, 5).toString());
-                        notesTextField.setText(jtable.getModel().getValueAt(editThisRow, 6).toString());
-
-                        if (e.getSource() == editButton) {
-                            ArrayList<String> rowEdit = new ArrayList<>();
-                            rowEdit.add(1, itemNameTextField.getText());
-                            rowEdit.add(2, quantityTextField.getText());
-                            rowEdit.add(3, expirationDateTextField.getText());
-                            rowEdit.add(4, itemCategory.getSelectedItem().toString());
-                            rowEdit.add(5, notesTextField.getText());
-                            if (!rowEdit.isEmpty()) {
-                                Timestamp theTimeIs = createTimeStamp();
+            if (e.getSource() == editButton){
+                InventoryDatabase db = new InventoryDatabase();
+                try {
+                    ResultSet rs = db.getItemByID(parseInt(inventoryIDTxt.getText())); 
+                    while (rs.next())
+                    {
+                        int inventoryID = rs.getInt("InventoryID");
+                        itemNameTextField.setText(rs.getString("ItemName"));
+                        quantityTextField.setText(rs.getString("QTY"));
+                        expirationDateTextField.setText(rs.getString("ExpireDate")); 
+                        notesTextField.setText(rs.getString("notes"));
+                        itemCategory.setSelectedItem(rs.getString("category"));
+                        
+                    }                      
+              } catch (SQLException ex) {
+                    Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(e.getSource() == removeButton)
+            {
+                InventoryDatabase db = new InventoryDatabase();
+                try {
+                    db.deleteByID(parseInt(inventoryIDTxt.getText())); 
+                }
+                catch (Exception ex) {
+                    Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (e.getSource() == okButton) {
+                            InventoryDatabase db = new InventoryDatabase();
+                            String inventoryID = inventoryIDTxt.getText();
+                            String editItemEntry =(itemNameTextField.getText());
+                            int editQty =  parseInt(quantityTextField.getText());
+                            String editExpire = expirationDateTextField.getText();
+                            String editCat = itemCategory.getSelectedItem().toString();
+                            String editNotes = notesTextField.getText();
+                            if ((inventoryID != null  && editItemEntry !=  "") && editQty != 0 && editExpire != "") {
+                                //Timestamp theTimeIs = createTimeStamp();
                                 //Dialog Box
-                                String value = JOptionPane.showInputDialog("Enter the ID of the Item you would like to Update:");
-                                InventoryDatabase db = new InventoryDatabase();
+                              //  String value = JOptionPane.showInputDialog("Enter the ID of the Item you would like to Update:");
+                                //InventoryDatabase db = new InventoryDatabase();
                                 int id = parseInt(inventoryID);
-                                db.updateItemByID(rowEdit, id);
-                                //if update by name
-                                //if ( !value.equals("") )
-                                //{
-                                //    row[0] = itemEntry;
-                                //    row[1] = quantityEntry;
-                                //    row[2] = expirationEntry;
-                                //    row[3] = categoryEntry;
-                                //  row[4] = notesEntry;
-                                //jTable.updateRowByID (row, Integer.parseInt( value ) );
-                                //   JOptionPane.showMessageDialog(null, "You have successfully updated item(s) in the database.");
+                                db.updateItemByID(editItemEntry,editQty,editExpire, editCat,editNotes, id);
+                                
                                 clearFields();
                             } else {
                                 JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
@@ -364,13 +385,11 @@ public class GUICreator extends JFrame implements ActionListener {
                             //JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
                         } else {
                             JOptionPane.showMessageDialog(null, "Please fill out all of the information in this form!");
-                        }
-                    } else {
-                    }
+                       }
+  //  } else {
+         //           }
                 }
-            }
-           
-        }
+            
         //MAIN FUNCTION, create new GUI object and set visible to true
     public static void main(String[] args) throws SQLException {
         GUICreator showTheGui = new GUICreator();

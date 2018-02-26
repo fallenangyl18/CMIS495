@@ -89,13 +89,13 @@ public class InventoryDatabase
         PreparedStatement prepareStatement = null;
      	String sql;
      	ResultSet rs = null;
-      	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, , notes, category FROM Inventory WHERE InventoryID = ?";
+      	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE InventoryID = ?";
         try
         {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setInt(1,ID);
-	    rs = prepareStatement.executeQuery(sql);
-    	    conn.commit();
+	    rs = prepareStatement.executeQuery();
+    	    return rs;
             
            // while (rs.next())
            // {
@@ -108,7 +108,7 @@ public class InventoryDatabase
              //   boolean isDeleted = rs.getBoolean("IsDeleted");
                 
            // }
-           return rs;
+           
     	}
     	catch(SQLException se)
         {
@@ -118,14 +118,11 @@ public class InventoryDatabase
     	}
     	finally
      	{
-    		if (prepareStatement != null)
-                {
-		prepareStatement.close();
-		}
+    		
       	}
-        return rs;
+        return null;
     }   
-    
+    //works 2-25/18 sw
      public ResultSet getAllActiveItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
     {   try 
           {
@@ -314,8 +311,8 @@ public class InventoryDatabase
      }   
      
  
-     // 1-23-18 fix sql code updated function to use prepared statements -Sharon
-    public void insertItem(String iname, int qty, String expire,String category, String notes, Timestamp time)
+     // 1-23-18 fix sql code updated function to use prepared statements -Sharon - works sw 2/25/18
+    public void insertItem(String iname, int qty, String expire,String category, String notes)
     { try
         {
          init();
@@ -326,10 +323,6 @@ public class InventoryDatabase
         ) {
             prepStmt.setString(1,iname);
             prepStmt.setInt(2,qty);
-            //prepStmt.setString(3,expire);
-            // prepStmt.setString(4,"GetDate()");
-            // prepStmt.setString(5,"GetDate()");
-            // prepStmt.setString(6,"false");
             prepStmt.setString(3,notes);
             prepStmt.setString(4,category);
             prepStmt.executeUpdate();
@@ -349,26 +342,24 @@ public class InventoryDatabase
     }
     
     // 1-23-18 fix sql code updated function to use prepared statements -Sharon
-    public void updateItemByID(ArrayList<String> data, int ID)
+    public void updateItemByID(String iname, int qty, String expire,String category, String notes, int ID)
     {
         try
         {
        init();
          PreparedStatement prepStmt;
-      	 String sql = "UPDATE Inventory SET ItemName = ?, QTY =?, ExpireDate =?, LastUpdated = ?, IsDeleted = ? , notes = ?, category = ? WHERE InventoryID = ?";
+      	 String sql = "UPDATE Inventory SET ItemName = ?, QTY =?, ExpireDate =?, LastUpdated = getdate(), IsDeleted = 0 , notes = ?, category = ? WHERE InventoryID = ?";
 	 prepStmt = conn.prepareStatement(sql);
-         Array array = conn.createArrayOf("VARCHAR", data.toArray());
+         //Array array = conn.createArrayOf("VARCHAR", data.toArray());
             	 
-         prepStmt.setArray(1,array);
-         prepStmt.setArray(2,array);
-         prepStmt.setArray(3,array);
-         prepStmt.setArray(4,array);
-         prepStmt.setArray(5,array);
-         prepStmt.setArray(6,array);
-         prepStmt.setArray(7,array);
-         prepStmt.setInt(8, ID);
-         prepStmt.executeUpdate();
-         conn.commit();
+         prepStmt.setString(1,iname);
+         prepStmt.setInt(2,qty);
+         prepStmt.setString(3,expire);        
+         prepStmt.setString(4,notes);
+         prepStmt.setString(5,category);
+         prepStmt.setInt(6, ID);
+         prepStmt.executeQuery();
+       
          }
          catch(SQLException se)
          {
@@ -388,13 +379,11 @@ public class InventoryDatabase
         try
         {           
             init();
-     	String sql = "DELETE FROM Inventory WHERE InventoryID = ?";
+     	String sql = "update inventory set isdeleted = 1 WHERE InventoryID = ?";
          prepStmt = conn.prepareStatement(sql);
-         prepStmt.setInt(1, ID);
-         prepStmt.executeUpdate(sql);
-         conn.commit();
-            prepStmt.executeUpdate(sql);
-            conn.commit();
+         prepStmt.setInt(1, ID);         
+         prepStmt.executeQuery();
+  
     	}
     	catch(SQLException se)
     	{
@@ -408,22 +397,20 @@ public class InventoryDatabase
     	}
     }
 	
-	
-	
     public ResultSet tableQuantityByCategory() //additions by Sumit 02/16/2018 -- This needs to be revised
 	      //revised by Sharon Walker 2//19/2018
     {
         init();
-    	    PreparedStatement preparedStatement = null;
+    	    
     	    ResultSet resultSet = null;
     	    String sql = "SELECT Category , SUM(QTY) FROM Inventory where isDeleted = 0 GROUP BY Category;";
     	    
     	    try 
     	    {
-    	        preparedStatement = conn.prepareStatement(sql);
-	        resultSet = preparedStatement.executeQuery(sql);
-    	    	conn.commit();
-    	    	preparedStatement.close();
+    	        Statement stmt = conn.createStatement(); 
+	        resultSet = stmt.executeQuery(sql);
+    	    	
+    	    	stmt.close();
             } 
     	    catch (SQLException e) 
     	    {
@@ -438,16 +425,16 @@ public class InventoryDatabase
 	    //revised by Sharon Walker 2//19/2018
     {
         init();
-    	  PreparedStatement preparedStatement = null;
+    	  
     	  ResultSet resultSet = null;
     	  String sql = "SELECT SUM(QTY) FROM Inventory where isDeleted = 0;";
     	 
     	   try
     	   {
-               preparedStatement = conn.prepareStatement(sql);
-    	       resultSet = preparedStatement.executeQuery(sql);
-    	       conn.commit();
-    	       preparedStatement.close();
+               Statement stmt = conn.createStatement(); 
+    	       resultSet = stmt.executeQuery(sql);
+    	      
+    	       stmt.close();
     	   }
     	   catch (SQLException e )
     	   {
@@ -461,7 +448,7 @@ public class InventoryDatabase
     	   {
     		  
     	   }
-    	   return resultSet;
+    	   return null;
     }
 
 
