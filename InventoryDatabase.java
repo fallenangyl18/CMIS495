@@ -18,6 +18,7 @@ package inventory;
  *
  * edited by Sharon Walker 2/19/2018 
  * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
+ *  sharon Walker add update delete works with database and populates jtable on startup
  *
  *****************************************************************************************/
 
@@ -89,25 +90,14 @@ public class InventoryDatabase
         PreparedStatement prepareStatement = null;
      	String sql;
      	ResultSet rs = null;
-      	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE InventoryID = ?";
+      	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE InventoryID = ?";
         try
         {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setInt(1,ID);
 	    rs = prepareStatement.executeQuery();
-    	    return rs;
-            
-           // while (rs.next())
-           // {
-           //     int inventoryID = rs.getInt("InventoryID");
-            //    String itemName = rs.getString("ItemName");
-            //    int qty = rs.getInt("QTY");
-            //    java.util.Date expDate = rs.getDate("ExpireDate");
-            //    java.util.Date dateEntered = rs.getDate("DateEntered");
-            //    java.util.Date lastUpdated = rs.getDate("LastUpdated");
-             //   boolean isDeleted = rs.getBoolean("IsDeleted");
-                
-           // }
+    	    return rs;        
+          
            
     	}
     	catch(SQLException se)
@@ -129,7 +119,7 @@ public class InventoryDatabase
          init();        
      	 String sql;  
          Statement stmt = conn.createStatement(); 
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
          ResultSet rs = stmt.executeQuery(sql);      
          return rs;
     	}
@@ -152,7 +142,7 @@ public class InventoryDatabase
          init();
          Statement stmt = conn.createStatement(); 
       	String sql;      	
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
            try 
            {    
      	        ResultSet rs = stmt.executeQuery(sql);      
@@ -177,7 +167,7 @@ public class InventoryDatabase
          init();
          Statement stmt = conn.createStatement();
       	String sql;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, vnotes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
            try 
            {                     
              ResultSet rs = stmt.executeQuery(sql);
@@ -202,7 +192,7 @@ public class InventoryDatabase
          init();
          Statement stmt = conn.createStatement();
       	 String sql;      	
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
            try 
            {                      
              ResultSet rs = stmt.executeQuery(sql);     	              
@@ -225,7 +215,7 @@ public class InventoryDatabase
          init();
          Statement stmt = conn.createStatement();
       	 String sql;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
            try 
            {                       
              ResultSet rs = stmt.executeQuery(sql);     	           
@@ -249,7 +239,7 @@ public class InventoryDatabase
          init();
          Statement stmt = conn.createStatement();
       	 String sql;      	
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
            try 
            {          
              ResultSet rs = stmt.executeQuery(sql);     	             
@@ -274,24 +264,13 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-       	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
+       	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate,notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
          try
          {
              prepareStatement = conn.prepareStatement(sql);
              prepareStatement.setDate(1, currentdate);             
              rs = prepareStatement.executeQuery(sql);
-             
-            // while (rs.next())
-            // {
-            //     int inventoryID = rs.getInt("InventoryID");
-             //    String itemName = rs.getString("ItemName");
-             //    int qty = rs.getInt("QTY");
-             //    java.util.Date expDate = rs.getDate("ExpireDate");
-             //    java.util.Date dateEntered = rs.getDate("DateEntered");
-             //    java.util.Date lastUpdated = rs.getDate("LastUpdated");
-              //   boolean isDeleted = rs.getBoolean("IsDeleted");
-                 
-            // }
+            
             return rs;
      	}
      	catch(SQLException se)
