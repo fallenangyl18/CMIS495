@@ -295,10 +295,8 @@ public class GUICreator extends JFrame implements ActionListener {
                 try {
                     dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
                     clearFields();
-                    ResultSet refresh;
                     refreshTheTable();
-                    refresh = dbConn.getAllActiveItems();
-                } catch (SQLException ex) {
+                } catch (SQLException | NumberFormatException ex) {
                     Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -317,8 +315,9 @@ public class GUICreator extends JFrame implements ActionListener {
                     itemCategory.setSelectedItem(rs.getString("category"));
 
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException| NumberFormatException ex) {
+                //Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
         } else if (e.getSource() == removeButton)
         {
