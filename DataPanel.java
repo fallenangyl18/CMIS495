@@ -1,6 +1,7 @@
 package inventory;
 
 
+
 /*************************** REVISION HISTORY ****************************************
  *
  *
@@ -19,6 +20,8 @@ package inventory;
  * values back to zero, as they will be populated and the progress bars will grow
  * as the database is updated.
  *
+ * VERSION 1.3
+ * Updated by Elizabeth Ruzich, removed a "new" database object, no need for it in this class.
  *
  **************************************************************************************/
 
@@ -63,7 +66,7 @@ public class DataPanel extends JPanel
 
         this.setBorder(BorderFactory.createLoweredBevelBorder());
         foodGroupPanel.setLayout(new GridLayout(6, 2));
-        //db = new InventoryDatabase();
+
 
         totalInventory.setFont(new Font("default", Font.BOLD, 18));
         totalInventory.setHorizontalAlignment(SwingConstants.LEFT);

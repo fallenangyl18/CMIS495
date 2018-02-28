@@ -1,3 +1,5 @@
+package inventory;
+
 
 /** ***************** REVISION HISTORY ****************************************************
  *  version 1.0
@@ -19,7 +21,8 @@
  *
  * version 1.2
  * Edited 02/26/18 by Elizabeth Ruzich, cleaned up some of the code, cleaned
- * up duplicate code.
+ * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
+ * so everyone could access, including the professor.
  *
  **************************************************************************************** */
 
@@ -28,27 +31,7 @@ import java.util.*;
 import java.sql.Date;
 
 public class InventoryDatabase {
-    //public static String getDbUrl() {
-    //	return DB_URL;
-    //}
 
-    //public static String getJdbcDriver() {
-    //	return JDBC_DRIVER;
-    //}
-    //public static String getUser() {
-    //	return USER;
-    //}
-//
-    //public static String getPass() {
-    //	return PASS;
-    //}
-    //JDBC driver name and database URL
-    //  private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    // private static final String DB_URL = "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=Inventory";  // This will change for everyone's computer - SW
-    //Database credentials
-    //  private static final String USER = "sqlDev";
-    //  private static final String PASS = "Passw0rd";
-    //query
     private Connection conn = null;
     private Statement stmt = null;
     //private ResultSet rs;
@@ -57,17 +40,34 @@ public class InventoryDatabase {
         try {
             if (conn == null) {
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                conn = DriverManager.getConnection(
-                        "jdbc:sqlserver://localhost:1433;database=InventoryApp;user=sqldev;password=password;"
-                );
+                conn = DriverManager.getConnection("jdbc:sqlserver://cmis495.cwhfglfbbsfj.us-east-2.rds.amazonaws.com:1433;database=InventoryApp;user=Caladain;password=rQPphzZloFcDl4tCFW68;");
             } else {
                 getMyConnection();
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
-    }
-
+   }
+ 
+ /*    public void init(){
+      try
+      {
+       if(conn == null)
+       {
+       Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+      conn=DriverManager.getConnection(
+              "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=InventoryApp","sqldev", "Passw0rd"
+               );
+        }
+      else
+      {
+              getMyConnection();
+      }
+      }
+      catch(ClassNotFoundException | SQLException e){
+         System.out.println(e);
+       }
+  } */
     public Connection getMyConnection() {
 
         return conn;
@@ -80,7 +80,7 @@ public class InventoryDatabase {
         PreparedStatement prepareStatement = null;
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE InventoryID = ?";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE InventoryID = ?";
         try {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setInt(1, ID);
@@ -112,7 +112,7 @@ public class InventoryDatabase {
             init();
             String sql;
             Statement stmt = conn.createStatement();
-            sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0";
+            sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException se) {
@@ -129,7 +129,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -147,7 +147,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             conn.commit();
@@ -165,7 +165,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -181,7 +181,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -198,7 +198,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -248,13 +248,14 @@ public class InventoryDatabase {
         try {
             init();
             String sql;
-            sql = "INSERT INTO Inventory(ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category) values (?,?,GetDate(),GetDate(),Getdate(),0,?,?)";
+            sql = "INSERT INTO Inventory(ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category) values (?,?,?,GetDate(),Getdate(),0,?,?)";
             try (PreparedStatement prepStmt = conn.prepareStatement(sql) // Array array = conn.createArrayOf("VARCHAR", data.toArray());
-                    ) {
+            ) {
                 prepStmt.setString(1, iname);
                 prepStmt.setInt(2, qty);
-                prepStmt.setString(3, notes);
-                prepStmt.setString(4, category);
+                prepStmt.setString(3, expire);
+                prepStmt.setString(4, notes);
+                prepStmt.setString(5, category);
                 prepStmt.executeUpdate();
             }
 
