@@ -20,6 +20,13 @@
  * fields after the add and edit buttons are pressed. Sumit fixed "off by one"
  * error with Timestamp displaying in table when unneeded.
  * 
+ *
+ * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the
+ * user entered would be picked up and displayed in the table. Also added a
+ * "Grains" category at the request of Fred as non-perishables were felt to not
+ * be enough. toLowerCase all strings for fast searching to make sure we don't
+ * miss stuff.
+ *
  *VERSION 1.2
  *Update by Sumit Malhotra on 02/24/2018
  *removed 1.1 methods and pop ups for editing and deleting 
@@ -28,12 +35,6 @@
  *updated deleting method to support deleting by selected row and call to InventoryTable()
  *added code for Database startup entries to populate database on startup
  *added code for supporting database class and result set
- *
- * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the
- * user entered would be picked up and displayed in the table. Also added a
- * "Grains" category at the request of Fred as non-perishables were felt to not
- * be enough. toLowerCase all strings for fast searching to make sure we don't
- * miss stuff.
  *
  * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
  * SHARON WRITE HERE
