@@ -18,6 +18,10 @@ package Inventory;
  * edited by Sharon Walker 2/19/2018 
  * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
  *
+ *version 1.2 
+ *Edited 02/26/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
+ *and tableQuantityByTotal() 
+ *
  *****************************************************************************************/
 
 import java.sql.*;
@@ -415,7 +419,7 @@ public class InventoryDatabase
     {
     	    PreparedStatement preparedStatement = null;
     	    ResultSet resultSet = null;
-    	    String sql = "SELECT Category , SUM(QTY) FROM InventoryApp where isDeleted = 0 GROUP BY Category;";
+    	    String sql = "SELECT Category , SUM(QTY) FROM InventoryApp WHERE isDeleted = 0 GROUP BY Category;";
     	    
     	    try 
     	    {
@@ -423,6 +427,7 @@ public class InventoryDatabase
 	        resultSet = preparedStatement.executeQuery(sql);
     	    	conn.commit();
     	    	preparedStatement.close();
+		return resultSet;
             } 
     	    catch (SQLException e) 
     	    {
@@ -438,7 +443,7 @@ public class InventoryDatabase
     {
     	  PreparedStatement preparedStatement = null;
     	  ResultSet resultSet = null;
-    	  String sql = "SELECT SUM(QTY) FROM InventoryApp where isDeleted = 0;";
+    	  String sql = "SELECT SUM(QTY) FROM InventoryApp WHERE isDeleted = 0;";
     	 
     	   try
     	   {
@@ -446,6 +451,7 @@ public class InventoryDatabase
     	       resultSet = preparedStatement.executeQuery(sql);
     	       conn.commit();
     	       preparedStatement.close();
+	       return resultSet;
     	   }
     	   catch (SQLException e )
     	   {
@@ -459,7 +465,7 @@ public class InventoryDatabase
     	   {
     		  
     	   }
-    	   return rs;
+    	   return resultSet;
     }
 
 
