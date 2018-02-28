@@ -64,7 +64,7 @@ public class GUICreator extends JFrame implements ActionListener {
     private JTextField notesTextField;
     private JComboBox itemCategory;
 
-    JTable jtable = new JTable();
+    private JTable jtable;
     DataPanel data = new DataPanel();
     private final JTextField inventoryIDTxt;
     private JButton okButton;
@@ -258,6 +258,14 @@ public class GUICreator extends JFrame implements ActionListener {
         notesTextField.setText("");
 
     }
+    
+
+    //function to update the table when the user adds, edits or deletes
+    //so that it reflects their changes.
+    public void refreshTheTable()
+    {
+        jtable.repaint();
+    }
 
     //Coding action listener
     @Override
@@ -278,12 +286,13 @@ public class GUICreator extends JFrame implements ActionListener {
             String notesEntry = notesTextField.getText();
 
             if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "") {
+                
+                try {
                 dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
                 clearFields();
                 ResultSet refresh;
-                try {
-                    refresh = dbConn.getAllActiveItems();
-                    jtable = new JTable(buildTableModel(refresh));
+                refreshTheTable();
+                refresh = dbConn.getAllActiveItems();
                 } catch (SQLException ex) {
                     Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -335,6 +344,7 @@ public class GUICreator extends JFrame implements ActionListener {
             //JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
         }
     }
+  
 
     //MAIN FUNCTION, create new GUI object and set visible to true
     public static void main(String[] args) throws SQLException {
