@@ -27,7 +27,7 @@
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
  *
- *VERSION 1.2
+ *VERSION 1.3
  *Update by Sumit Malhotra on 02/24/2018
  *removed 1.1 methods and pop ups for editing and deleting 
  *updated editing method to support editing by selection and commiting edit with button text changes,
