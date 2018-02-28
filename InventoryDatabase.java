@@ -19,7 +19,7 @@ package Inventory;
  * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
  *
  *version 1.2 
- *Edited 02/26/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
+ *Edited 02/28/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
  *and tableQuantityByTotal() 
  *
  *****************************************************************************************/
