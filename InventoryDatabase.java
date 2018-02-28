@@ -19,7 +19,8 @@
  *
  * version 1.2
  * Edited 02/26/18 by Elizabeth Ruzich, cleaned up some of the code, cleaned
- * up duplicate code.
+ * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
+ * so everyone could access, including the professor.
  *
  **************************************************************************************** */
 
@@ -57,9 +58,7 @@ public class InventoryDatabase {
         try {
             if (conn == null) {
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                conn = DriverManager.getConnection(
-                        "jdbc:sqlserver://localhost:1433;database=InventoryApp;user=sqldev;password=password;"
-                );
+                conn = DriverManager.getConnection("jdbc:sqlserver://cmis495.cwhfglfbbsfj.us-east-2.rds.amazonaws.com:1433;database=InventoryApp;user=Caladain;password=rQPphzZloFcDl4tCFW68;");
             } else {
                 getMyConnection();
             }
@@ -80,7 +79,7 @@ public class InventoryDatabase {
         PreparedStatement prepareStatement = null;
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE InventoryID = ?";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE InventoryID = ?";
         try {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setInt(1, ID);
@@ -112,7 +111,7 @@ public class InventoryDatabase {
             init();
             String sql;
             Statement stmt = conn.createStatement();
-            sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0";
+            sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException se) {
@@ -129,7 +128,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -147,7 +146,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             conn.commit();
@@ -165,7 +164,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -181,7 +180,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -198,7 +197,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -250,7 +249,7 @@ public class InventoryDatabase {
             String sql;
             sql = "INSERT INTO Inventory(ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category) values (?,?,GetDate(),GetDate(),Getdate(),0,?,?)";
             try (PreparedStatement prepStmt = conn.prepareStatement(sql) // Array array = conn.createArrayOf("VARCHAR", data.toArray());
-                    ) {
+            ) {
                 prepStmt.setString(1, iname);
                 prepStmt.setInt(2, qty);
                 prepStmt.setString(3, notes);
