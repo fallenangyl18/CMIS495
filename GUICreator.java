@@ -149,7 +149,7 @@ public class GUICreator extends JFrame implements ActionListener {
         //Putting the JTable into the Display Pane; Removed textArea, was no longer needed
         JScrollPane invDisplayPane = new JScrollPane(jtable);
         jtable.setFillsViewportHeight(true);
-        invDisplayPane.setPreferredSize(new Dimension(600, 450));
+        invDisplayPane.setPreferredSize(new Dimension(700, 450));
         invDisplayPane.getVerticalScrollBar().setValue(invDisplayPane.getVerticalScrollBar().getMinimum());
         invDisplayPane.getHorizontalScrollBar().setValue(invDisplayPane.getHorizontalScrollBar().getMinimum());
 
