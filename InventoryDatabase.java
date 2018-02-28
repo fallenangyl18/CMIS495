@@ -22,6 +22,7 @@
  * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
  * so everyone could access, including the professor.
  *
+ * Sharon fixed expiredate in insert statment
  **************************************************************************************** */
 
 import java.sql.*;
@@ -247,13 +248,14 @@ public class InventoryDatabase {
         try {
             init();
             String sql;
-            sql = "INSERT INTO Inventory(ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category) values (?,?,GetDate(),GetDate(),Getdate(),0,?,?)";
+            sql = "INSERT INTO Inventory(ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category) values (?,?,?,GetDate(),Getdate(),0,?,?)";
             try (PreparedStatement prepStmt = conn.prepareStatement(sql) // Array array = conn.createArrayOf("VARCHAR", data.toArray());
             ) {
                 prepStmt.setString(1, iname);
                 prepStmt.setInt(2, qty);
-                prepStmt.setString(3, notes);
-                prepStmt.setString(4, category);
+                prepStmt.setString(3, expire);
+                prepStmt.setString(4, notes);
+                prepStmt.setString(5, category);
                 prepStmt.executeUpdate();
             }
 
