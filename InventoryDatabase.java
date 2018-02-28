@@ -1,6 +1,3 @@
-package inventory;
-
-
 /** ***************** REVISION HISTORY ****************************************************
  *  version 1.0
  *  Created by Sumit Malhotra 1/22/2018
@@ -24,6 +21,8 @@ package inventory;
  * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
  * so everyone could access, including the professor.
  *
+ * version 1.3
+ * Sharon fixed expiredate in insert statment 02/28/2018
  **************************************************************************************** */
 
 import java.sql.*;
@@ -31,7 +30,27 @@ import java.util.*;
 import java.sql.Date;
 
 public class InventoryDatabase {
+    //public static String getDbUrl() {
+    //	return DB_URL;
+    //}
 
+    //public static String getJdbcDriver() {
+    //	return JDBC_DRIVER;
+    //}
+    //public static String getUser() {
+    //	return USER;
+    //}
+//
+    //public static String getPass() {
+    //	return PASS;
+    //}
+    //JDBC driver name and database URL
+    //  private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    // private static final String DB_URL = "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=Inventory";  // This will change for everyone's computer - SW
+    //Database credentials
+    //  private static final String USER = "sqlDev";
+    //  private static final String PASS = "Passw0rd";
+    //query
     private Connection conn = null;
     private Statement stmt = null;
     //private ResultSet rs;
@@ -47,27 +66,8 @@ public class InventoryDatabase {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
-   }
- 
- /*    public void init(){
-      try
-      {
-       if(conn == null)
-       {
-       Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-      conn=DriverManager.getConnection(
-              "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=InventoryApp","sqldev", "Passw0rd"
-               );
-        }
-      else
-      {
-              getMyConnection();
-      }
-      }
-      catch(ClassNotFoundException | SQLException e){
-         System.out.println(e);
-       }
-  } */
+    }
+
     public Connection getMyConnection() {
 
         return conn;
