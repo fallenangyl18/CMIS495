@@ -20,7 +20,7 @@ package Inventory;
  *
  *version 1.2 
  *Edited 02/28/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
- *and tableQuantityByTotal() 
+ *and tableQuantityByTotal() and getAllActiveItems()
  *
  *****************************************************************************************/
 
@@ -126,7 +126,7 @@ public class InventoryDatabase
         PreparedStatement prepareStatement = null;
      	String sql;
      	ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0";
           try 
           {
             prepareStatement = conn.prepareStatement(sql);           
@@ -152,7 +152,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Produce'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0 and category = 'Produce'";
            try 
            {
              prepareStatement = conn.prepareStatement(sql);           
@@ -178,7 +178,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Meat'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0 and category = 'Meat'";
            try 
            {
              prepareStatement = conn.prepareStatement(sql);           
@@ -204,7 +204,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Dairy'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0 and category = 'Dairy'";
            try 
            {
              prepareStatement = conn.prepareStatement(sql);           
@@ -230,7 +230,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category like 'non%'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0 and category like 'non%'";
            try 
            {
              prepareStatement = conn.prepareStatement(sql);           
@@ -256,7 +256,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0 and category = 'Liquids'";
+         sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0 and category = 'Liquids'";
            try 
            {
              prepareStatement = conn.prepareStatement(sql);           
@@ -282,7 +282,7 @@ public class InventoryDatabase
          PreparedStatement prepareStatement = null;
       	String sql;
       	ResultSet rs = null;
-       	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, notes, category FROM InventoryApp WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
+       	sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, notes, category FROM InventoryApp WHERE ExpireDate >= DATEADD(day,3,?) and IsDeleted = 0";
          try
          {
              prepareStatement = conn.prepareStatement(sql);
@@ -465,7 +465,7 @@ public class InventoryDatabase
     	   {
     		  
     	   }
-    	   return resultSet;
+    	   return null;
     }
 
 
