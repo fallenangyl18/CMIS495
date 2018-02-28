@@ -1,7 +1,7 @@
-
+package inventory;
 /**
- * *************************** REVISION HISTORY
- * ****************************************
+ * *************************** REVISION HISTORY****************************************
+ *
  *
  * Version 1.0 created by Beth 2/10/18 Created all buttons, text fields, labels,
  * GUI components, action listener, timestamp function JPanels, MAIN, action
@@ -19,7 +19,6 @@
  * VERSION 1.2 on 2/22/18 Beth added "clearFields" function to clear the text
  * fields after the add and edit buttons are pressed. Sumit fixed "off by one"
  * error with Timestamp displaying in table when unneeded.
- * 
  *
  * VERSION 1.3 2/23/18 Beth added "Notes" section to Parameters so the notes the
  * user entered would be picked up and displayed in the table. Also added a
@@ -27,22 +26,14 @@
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
  *
- *VERSION 1.3
- *Update by Sumit Malhotra on 02/24/2018
- *removed 1.1 methods and pop ups for editing and deleting 
- *updated editing method to support editing by selection and commiting edit with button text changes,
- *and code to commit changes to the data table
- *updated deleting method to support deleting by selected row and call to InventoryTable()
- *added code for Database startup entries to populate database on startup
- *added code for supporting database class and result set
- *
  * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
  * SHARON WRITE HERE
  *
  * VERSION 1.5 2/27/18 Beth worked on, took away erroneous notifications, we nixed
  * the search feature for the sake of time, cleaned up code a little, error checking
  * for invalid and null entries. Worked with Sharon on refreshing the JScrollPane when
- * items are deleted from or added to the inventory.
+ * items are deleted from or added to the inventory. Wrote a refresh function, handled
+ * some unhandled exceptions.
  *
  *
  ****************************************************************************************
@@ -268,48 +259,45 @@ public class GUICreator extends JFrame implements ActionListener {
         notesTextField.setText("");
 
     }
-   
+
 
     //function to update the table when the user adds, edits or deletes
     //so that it reflects their changes.
-    public void refreshTheTable()
-    {   
+    public void refreshTheTable() throws SQLException
+    {
+        ResultSet rs = dbConn.getAllActiveItems();
+        DefaultTableModel model = buildTableModel(rs);
+        jtable.setModel(model);
+        model.fireTableDataChanged();
         jtable.repaint();
-        
     }
 
     //Coding action listener
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton) {
-
-            // ArrayList<String> row = new ArrayList<>();
-            // row.add(itemNameTextField.getText());
-            //row.add(quantityTextField.getText());
-            //row.add(expirationDateTextField.getText());
-            // row.add(itemCategory.getSelectedItem().toString());
-            // row.add(notesTextField.getText());
-            //Getting the entries from the GUI's text fields, that the user entered.
-            String itemEntry = itemNameTextField.getText();
-            int quantityEntry = Integer.parseInt(quantityTextField.getText());
-            String expirationEntry = expirationDateTextField.getText();
-            String categoryEntry = itemCategory.getSelectedItem().toString();
-            String notesEntry = notesTextField.getText();
-
-            if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "") {
-                
-                try {
-                dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
-                clearFields();
-                ResultSet refresh;
-                refreshTheTable();
-                refresh = dbConn.getAllActiveItems();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == addButton)
+        {
+            try
+            {
+                String itemEntry = itemNameTextField.getText();
+                int quantityEntry = Integer.parseInt(quantityTextField.getText());
+                String expirationEntry = expirationDateTextField.getText();
+                String categoryEntry = itemCategory.getSelectedItem().toString();
+                String notesEntry = notesTextField.getText();
+                if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "")
+                {
+                    try {
+                        dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
+                        clearFields();
+                        refreshTheTable();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Please fill out all fields in this form.");
+            } catch (NumberFormatException exc)
+            {
+                JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out.");
             }
         } else if (e.getSource() == editButton) {
             try {
@@ -325,10 +313,11 @@ public class GUICreator extends JFrame implements ActionListener {
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
-        } else if (e.getSource() == removeButton) 
+        } else if (e.getSource() == removeButton)
         {
-            try 
+            try
             {
                 dbConn.deleteByID(parseInt(inventoryIDTxt.getText()));
                 refreshTheTable();
@@ -345,20 +334,22 @@ public class GUICreator extends JFrame implements ActionListener {
             String editNotes = notesTextField.getText();
             if (inventoryID != null || !inventoryID.equals("0")) {
 
-                //Dialog Box
-                //JOptionPane.showInputDialog("Enter the ID of the Item you would like to Update:");
                 int id = Integer.parseInt(inventoryID);
                 dbConn.updateItemByID(editItemEntry, editQty, editExpire, editCat, editNotes, id);
-                refreshTheTable();
+                try {
+                    refreshTheTable();
+                }
+                catch (SQLException exc)
+                {
+                    exc.printStackTrace();
+                }
                 clearFields();
             } else {
                 JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
             }
-            //System.out.println("You edited " + itemEntry + " on " + theTimeIs);
-            //JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
         }
     }
-  
+
 
     //MAIN FUNCTION, create new GUI object and set visible to true
     public static void main(String[] args) throws SQLException {

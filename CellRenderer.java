@@ -1,4 +1,4 @@
-package capstone;
+package inventory;
 
 /*******************************REVISION HISTORY******************************************
  * Version 1.0
