@@ -274,29 +274,30 @@ public class GUICreator extends JFrame implements ActionListener {
 
     //Coding action listener
     @Override
-    public void actionPerformed(ActionEvent e)  {
-        if (e.getSource() == addButton) {
-
-            String itemEntry = itemNameTextField.getText();
-            int quantityEntry = Integer.parseInt(quantityTextField.getText());
-            String expirationEntry = expirationDateTextField.getText();
-            String categoryEntry = itemCategory.getSelectedItem().toString();
-            String notesEntry = notesTextField.getText();
-
-            if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "")
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == addButton)
+        {
+            try
             {
-
-                try
+                String itemEntry = itemNameTextField.getText();
+                int quantityEntry = Integer.parseInt(quantityTextField.getText());
+                String expirationEntry = expirationDateTextField.getText();
+                String categoryEntry = itemCategory.getSelectedItem().toString();
+                String notesEntry = notesTextField.getText();
+                if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "")
                 {
-                    dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
-                    clearFields();
-                    refreshTheTable();
-                } catch (SQLException | NumberFormatException ex) {
-                    Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                    try {
+                        dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
+                        clearFields();
+                        refreshTheTable();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Please fill out all fields in this form.");
+            } catch (NumberFormatException exc)
+            {
+                JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out.");
             }
         } else if (e.getSource() == editButton) {
             try {
@@ -310,7 +311,7 @@ public class GUICreator extends JFrame implements ActionListener {
                     itemCategory.setSelectedItem(rs.getString("category"));
 
                 }
-            } catch (SQLException| NumberFormatException ex) {
+            } catch (SQLException ex) {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
