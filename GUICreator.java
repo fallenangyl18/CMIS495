@@ -280,7 +280,7 @@ public class GUICreator extends JFrame implements ActionListener {
             // row.add(itemCategory.getSelectedItem().toString());
             // row.add(notesTextField.getText());
             //Getting the entries from the GUI's text fields, that the user entered.
-            String itemEntry = itemNameTextField.getText().toLowerCase();
+            String itemEntry = itemNameTextField.getText();
             int quantityEntry = Integer.parseInt(quantityTextField.getText());
             String expirationEntry = expirationDateTextField.getText();
             String categoryEntry = itemCategory.getSelectedItem().toString();
