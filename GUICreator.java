@@ -1,7 +1,7 @@
 
 /**
- * *************************** REVISION HISTORY
- * ****************************************
+ * *************************** REVISION HISTORY****************************************
+ *
  *
  * Version 1.0 created by Beth 2/10/18 Created all buttons, text fields, labels,
  * GUI components, action listener, timestamp function JPanels, MAIN, action
