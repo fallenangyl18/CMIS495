@@ -1,4 +1,4 @@
-package inventory;
+
 /**
  * *************************** REVISION HISTORY****************************************
  *
@@ -34,6 +34,9 @@ package inventory;
  * for invalid and null entries. Worked with Sharon on refreshing the JScrollPane when
  * items are deleted from or added to the inventory. Wrote a refresh function, handled
  * some unhandled exceptions.
+ *
+ * VERSION 1.6 2/28/18 Beth changed the display size of the JScrollPane to make the display
+ * larger and easier to read.
  *
  *
  ****************************************************************************************
@@ -73,7 +76,8 @@ public class GUICreator extends JFrame implements ActionListener {
     InventoryDatabase dbConn = new InventoryDatabase();
 
     //Create the GUI
-    public GUICreator() throws SQLException {
+    public GUICreator() throws SQLException
+    {
         //setting GUI base information
         super("Pantry Inventory");
         setLayout(new BorderLayout());
@@ -145,6 +149,7 @@ public class GUICreator extends JFrame implements ActionListener {
         //Putting the JTable into the Display Pane; Removed textArea, was no longer needed
         JScrollPane invDisplayPane = new JScrollPane(jtable);
         jtable.setFillsViewportHeight(true);
+        invDisplayPane.setPreferredSize(new Dimension(600, 450));
         invDisplayPane.getVerticalScrollBar().setValue(invDisplayPane.getVerticalScrollBar().getMinimum());
         invDisplayPane.getHorizontalScrollBar().setValue(invDisplayPane.getHorizontalScrollBar().getMinimum());
 
