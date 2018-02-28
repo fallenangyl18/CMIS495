@@ -277,22 +277,17 @@ public class GUICreator extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e)  {
         if (e.getSource() == addButton) {
 
-            // ArrayList<String> row = new ArrayList<>();
-            // row.add(itemNameTextField.getText());
-            //row.add(quantityTextField.getText());
-            //row.add(expirationDateTextField.getText());
-            // row.add(itemCategory.getSelectedItem().toString());
-            // row.add(notesTextField.getText());
-            //Getting the entries from the GUI's text fields, that the user entered.
             String itemEntry = itemNameTextField.getText();
             int quantityEntry = Integer.parseInt(quantityTextField.getText());
             String expirationEntry = expirationDateTextField.getText();
             String categoryEntry = itemCategory.getSelectedItem().toString();
             String notesEntry = notesTextField.getText();
 
-            if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "") {
+            if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "")
+            {
 
-                try {
+                try
+                {
                     dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
                     clearFields();
                     refreshTheTable();
@@ -316,7 +311,7 @@ public class GUICreator extends JFrame implements ActionListener {
 
                 }
             } catch (SQLException| NumberFormatException ex) {
-                //Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
         } else if (e.getSource() == removeButton)
@@ -338,8 +333,6 @@ public class GUICreator extends JFrame implements ActionListener {
             String editNotes = notesTextField.getText();
             if (inventoryID != null || !inventoryID.equals("0")) {
 
-                //Dialog Box
-                //JOptionPane.showInputDialog("Enter the ID of the Item you would like to Update:");
                 int id = Integer.parseInt(inventoryID);
                 dbConn.updateItemByID(editItemEntry, editQty, editExpire, editCat, editNotes, id);
                 try {
@@ -353,8 +346,6 @@ public class GUICreator extends JFrame implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
             }
-            //System.out.println("You edited " + itemEntry + " on " + theTimeIs);
-            //JOptionPane.showMessageDialog(null, "You have successfully edited item(s) in the database.");
         }
     }
 
