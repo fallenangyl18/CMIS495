@@ -27,6 +27,16 @@ package Inventory;
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
  *
+ *
+ *VERSION 1.3
+ *Update by Sumit Malhotra on 02/24/2018
+ *removed 1.1 methods and pop ups for editing and deleting 
+ *updated editing method to support editing by selection and commiting edit with button text changes,
+ *and code to commit changes to the data table
+ *updated deleting method to support deleting by selected row and call to InventoryTable()
+ *added code for Database startup entries to populate database on startup
+ *added code for supporting database class and result set
+ *
  * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
  * SHARON WRITE HERE
  *
