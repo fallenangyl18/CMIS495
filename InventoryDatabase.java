@@ -216,7 +216,7 @@ public class InventoryDatabase {
         Statement stmt = conn.createStatement();
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,GETDate()) and isDeleted = 0";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE ExpireDate <= DATEADD(day,3,GETDate()) and isDeleted = 0";
         try {
            
             //prepareStatement.setDate(1, currentdate);
