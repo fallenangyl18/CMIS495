@@ -27,7 +27,7 @@ package Inventory;
  *
  *version 1.2 
  *Edited 02/26/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
- *and tableQuantityByTotal() 
+ *and tableQuantityByTotal(), getAllActiveItems()
  *
  ***********************************************************************************************/
 
