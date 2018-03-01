@@ -133,7 +133,7 @@ public class InventoryDatabase
         PreparedStatement prepareStatement = null;
      	String sql;
      	ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE Isdeleted = 0";
+        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, IsDeleted, notes, category FROM InventoryApp WHERE IsDeleted = 0";
           try 
           {
             prepareStatement = conn.prepareStatement(sql);           
