@@ -1,5 +1,4 @@
-package Inventory;
-
+package inventory;
 /**
  * *************************** REVISION HISTORY****************************************
  *
@@ -26,8 +25,7 @@ package Inventory;
  * "Grains" category at the request of Fred as non-perishables were felt to not
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
- *
- *
+ * 
  *VERSION 1.3
  *Update by Sumit Malhotra on 02/24/2018
  *removed 1.1 methods and pop ups for editing and deleting 
@@ -36,6 +34,7 @@ package Inventory;
  *updated deleting method to support deleting by selected row and call to InventoryTable()
  *added code for Database startup entries to populate database on startup
  *added code for supporting database class and result set
+
  *
  * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
  * SHARON WRITE HERE
@@ -46,6 +45,15 @@ package Inventory;
  * items are deleted from or added to the inventory. Wrote a refresh function, handled
  * some unhandled exceptions.
  *
+ * VERSION 1.6 2/28/18 Beth changed the display size of the JScrollPane to make the display
+ * larger and easier to read. Added inventoryIDTxt to the reset the text function so that
+ * when the "OK" button is cleared after an inventory edit, the ID number is cleared out
+ * as well as the rest of the fields.
+ *
+ *
+ *VERSION 1.6 03/01/2018
+ *Sumit added methods to support updating the DataPanel, added exceptions for edit and
+ *OK buttons for ID, added JTable settings to support static columns and gridlines
  *
  ****************************************************************************************
  */
@@ -62,8 +70,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
-public class GUICreator extends JFrame implements ActionListener {
-
+public class GUICreator extends JFrame implements ActionListener
+{
     //Declaration of variables for options display text area (left side)
     //And inventory display (right side)
     //Declaration of Combo Box
@@ -82,15 +90,17 @@ public class GUICreator extends JFrame implements ActionListener {
     private JButton okButton;
 
     InventoryDatabase dbConn = new InventoryDatabase();
+    
 
     //Create the GUI
-    public GUICreator() throws SQLException {
+    public GUICreator() throws SQLException
+    {
         //setting GUI base information
         super("Pantry Inventory");
         setLayout(new BorderLayout());
         setBackground(Color.white);
         setSize(900, 650);
-
+        
         //Creating a "container" for the panels to sit in
         JPanel containerPanel = new JPanel();
         //setting the layout and border information
@@ -102,13 +112,12 @@ public class GUICreator extends JFrame implements ActionListener {
 
         dbConn.init();
         ResultSet rs = dbConn.getAllActiveItems();
-       
 
         jtable = new JTable(buildTableModel(rs));
         jtable.setRowSelectionAllowed(true);
         jtable.getTableHeader().setReorderingAllowed(false);
-       // jtable.setDefaultRenderer(Object.class, new CellRenderer());
-   
+        jtable.setShowGrid(true);
+        jtable.setGridColor(Color.BLACK);
         
 
         //Creating a JLabel for the menu
@@ -162,6 +171,7 @@ public class GUICreator extends JFrame implements ActionListener {
         //Putting the JTable into the Display Pane; Removed textArea, was no longer needed
         JScrollPane invDisplayPane = new JScrollPane(jtable);
         jtable.setFillsViewportHeight(true);
+        invDisplayPane.setPreferredSize(new Dimension(700, 450));
         invDisplayPane.getVerticalScrollBar().setValue(invDisplayPane.getVerticalScrollBar().getMinimum());
         invDisplayPane.getHorizontalScrollBar().setValue(invDisplayPane.getHorizontalScrollBar().getMinimum());
 
@@ -244,7 +254,6 @@ public class GUICreator extends JFrame implements ActionListener {
         buttonsPanel.add(okButton);
         buttonsPanel.add(removeButton);
         leftPanel.add(buttonsPanel);
-     
 
         //Adding all of the components that are in the left panel into the overall container panel.
         containerPanel.add(leftPanel);
@@ -275,6 +284,7 @@ public class GUICreator extends JFrame implements ActionListener {
         expirationDateTextField.setText("");
         itemCategory.setSelectedIndex(0);
         notesTextField.setText("");
+        inventoryIDTxt.setText("");
 
     }
 
@@ -333,6 +343,10 @@ public class GUICreator extends JFrame implements ActionListener {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
+            catch(NumberFormatException e1)
+            {
+               	JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
+            }
         } else if (e.getSource() == removeButton)
         {
             try
@@ -344,6 +358,8 @@ public class GUICreator extends JFrame implements ActionListener {
             }
         } else //else it's the OK button cuz there are no other buttons.
         {
+        	   try
+        	   {
             String inventoryID = (inventoryIDTxt.getText());
             String editItemEntry = (itemNameTextField.getText());
             int editQty = parseInt(quantityTextField.getText());
@@ -363,9 +379,16 @@ public class GUICreator extends JFrame implements ActionListener {
                 }
                 clearFields();
             } else {
-                JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
-            }
+                JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
+              }
+        	   }
+        	   catch(NumberFormatException e1)
+        	   {
+        		   JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
+        	   }
         }
+        data.countTotalInventory();
+        data.countFoodGroup();
     }
 
 
@@ -373,16 +396,13 @@ public class GUICreator extends JFrame implements ActionListener {
     public static void main(String[] args) throws SQLException {
         GUICreator showTheGui = new GUICreator();
         showTheGui.setVisible(true);
+        NotificationDialog nd= new NotificationDialog();
     }
 
     public static DefaultTableModel buildTableModel(ResultSet rs)
             throws SQLException {
- 
-    	try
-    	{
-    	
+
         ResultSetMetaData metaData = rs.getMetaData();
-        
 
         // names of columns
         Vector<String> columnNames = new Vector<String>();
@@ -402,13 +422,7 @@ public class GUICreator extends JFrame implements ActionListener {
         }
 
         return new DefaultTableModel(data, columnNames);
-       
-    	}
-    	catch(NullPointerException e)
-    	{
-    	 	return null;
-    	}
-       	
+
     }
 
 }
