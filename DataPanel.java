@@ -1,4 +1,4 @@
-package Inventory;
+package inventory;
 
 
 
@@ -20,13 +20,15 @@ package Inventory;
  * values back to zero, as they will be populated and the progress bars will grow
  * as the database is updated.
  *
+ * VERSION 1.3
+ * Updated by Elizabeth Ruzich, removed a "new" database object, no need for it in this class.
  *
- *version 1.3
- * Edited 02/28/2018 by Sumit Malhotra, creates a panel with a new format with borders, new grid 
- * and layout arrangements. Updated to support result sets from database to update category 
+ * version 1.3
+ * Edited 02/28/2018 by Sumit Malhotra, creates a panel with a new format, borders, new grid 
+ * and layout arrangements to support 3x2 gridlayout. Updated to support result sets from database to update category 
  * JLabels, JProgressBars, and to calculate percentages for inventory totals
- *
  **************************************************************************************/
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +40,7 @@ import java.util.*;
 
 public class DataPanel extends JPanel
 {
-    private ResultSet rs = null;
+ 
     private InventoryDatabase db = new InventoryDatabase();
 
     private JLabel totalInventory;
@@ -70,7 +72,7 @@ public class DataPanel extends JPanel
     {
         super();
 
-        UIManager.put("ProgressBar.selectionForeground", Color.GREEN);
+        UIManager.put("ProgressBar.selectionForeground", Color.RED);
         db.init();
         produceJPB = new JProgressBar(0 , 100);
         meatJPB = new JProgressBar(0 , 100);
@@ -83,6 +85,7 @@ public class DataPanel extends JPanel
         foodGroupPanel.setLayout(new GridLayout(3, 2));
      
         totalInventory = new JLabel("Total Inventory:");
+        totalInventory.setBorder(new EmptyBorder(20, 20, 20, 20));
         totalInventory.setFont(new Font("default", Font.BOLD, 18));
         totalInventory.setHorizontalAlignment(SwingConstants.LEFT);
        
@@ -151,8 +154,8 @@ public class DataPanel extends JPanel
         foodGroupPanel.add(grains);
         foodGroupPanel.add(liquids);
         
-        //countTotalInventory();
-       // countFoodGroup();
+        countTotalInventory();
+        countFoodGroup();
 
         this.add(foodGroupPanel);
 
@@ -160,10 +163,15 @@ public class DataPanel extends JPanel
 
     public void countTotalInventory()
     {
+ 	    ResultSet rs;
+        rs = db.tableQuantityByTotal();
 	    try 
 	    {
-            rs = db.tableQuantityByTotal();
-	     	total = rs.getInt(0);
+	        if(rs.next())
+	        {
+	          	total = (int)rs.getObject(1);  
+	        }
+	    
 	     	totalInventory.setText("Total Inventory: " + total);
 	     	this.revalidate();
 	     	this.repaint();
@@ -171,11 +179,11 @@ public class DataPanel extends JPanel
 	    catch (SQLException e) 
 	    {
 		    // TODO Auto-generated catch block
-		  //   e.printStackTrace();
+		     e.printStackTrace();
      	}
 	    catch(NullPointerException e)
 	    {
-	    	
+	    	   e.printStackTrace();
 	    }
 	    finally
 	    {
@@ -186,50 +194,80 @@ public class DataPanel extends JPanel
     public void countFoodGroup()
     {
       
-        int meatCount =0;
+        int meatCount = 0;
         int produceCount = 0;
         int dairyCount = 0;
         int nonperishableCount = 0;
         int grainsCount = 0;
         int liquidsCount = 0;
        
+        ResultSet rs = null;
+      	rs = db.tableQuantityByCategory();
         try 
         {
-          	rs = db.tableQuantityByCategory();
-			meatCount = rs.getInt("Meat");
-	        produceCount = rs.getInt("Produce");
-	        dairyCount = rs.getInt("Dairy");
-	        nonperishableCount = rs.getInt("Nonperishable");
-	        grainsCount = rs.getInt("Grains");
-	        liquidsCount = rs.getInt("Liquids");
+        	 
+	        while(rs.next())
+	        {
+	        	    
+	            switch(rs.getString(1))
+	            {
+	            case "Dairy":
+	              	dairyCount = rs.getInt(2); //1
+	            		break;
+	            case "Grains":
+	            		grainsCount = rs.getInt(2); //2
+	            		break;
+	            case "Liquids":
+	            		liquidsCount = rs.getInt(2); //3
+	            		break;
+	            case "Meat":
+	              	meatCount = rs.getInt(2); //4
+	            		break;
+	            case "Non-perishable":
+	            	    nonperishableCount = rs.getInt(2); //5
+	            		break;
+	            case "Produce":
+	                	produceCount = rs.getInt(2); //6
+	            		break;
+	              default:
+	        	          break;
+	            }
+	        }
 	        
-	        produceJPB.setValue((int)(produceCount/total*100));
-	        producelbl.setText("Produce: " + (produceCount/total*100) );
+	       
+	        produceJPB.setValue( Math.round( (produceCount*100) / total ) );
+	        produceJPB.setStringPainted(true);
+	        producelbl.setText("Produce: " + produceCount + "/" + total  );
 	        produce.revalidate();
 	        produce.repaint();
 	        
-	        meatJPB.setValue(meatCount/total);
-	        meatlbl.setText("Meat: " + meatCount/total);
+	        meatJPB.setValue( Math.round( ( meatCount*100 ) / total ) );
+	        meatJPB.setStringPainted(true);
+	        meatlbl.setText("Meat: "  + meatCount + "/" + total);
 	        meat.revalidate();
 	        meat.repaint();
 	        
-	        dairyJPB.setValue((int)(dairyCount/total*100));
-	        dairylbl.setText("Dairy: " + (dairyCount/total*100) );
+	        dairyJPB.setValue( Math.round( ( dairyCount*100) / total ) );
+	        dairyJPB.setStringPainted(true);
+	        dairylbl.setText("Dairy: " + dairyCount + "/" + total );
 	        dairy.revalidate();
 	        dairy.repaint();
 	        
-	        nonperishableJPB.setValue((int)(nonperishableCount/total*100));
-	        nonperishablelbl.setText("Nonperishable: " + (nonperishableCount/total*100) );
+	        nonperishableJPB.setValue( Math.round( ( nonperishableCount*100 ) / total ) );
+	        nonperishableJPB.setStringPainted(true);
+	        nonperishablelbl.setText("Nonperishable: " + nonperishableCount + "/" + total );
 	        nonperishable.revalidate();
 	        nonperishable.repaint();
 	        
-	        grainsJPB.setValue((int)(grainsCount/total*100));
-	        grainslbl.setText("Grains: " + (grainsCount/total*100) );
+	        grainsJPB.setValue(Math.round((grainsCount*100)/total));
+	        grainsJPB.setStringPainted(true);
+	        grainslbl.setText("Grains: " + + grainsCount + "/" + total );
 	        grains.revalidate();
 	        grains.repaint();
 	        
-	        liquidsJPB.setValue((int)(liquidsCount/total*100));
-	        liquidslbl.setText("Liquids: " + (liquidsCount/total*100));
+	        liquidsJPB.setValue( Math.round( ( liquidsCount*100 ) / total ) );
+	        liquidsJPB.setStringPainted(true);
+	        liquidslbl.setText("Liquids: " + + liquidsCount + "/" + total);
 	        liquids.revalidate();
 	        liquids.repaint();
 	      
@@ -237,11 +275,11 @@ public class DataPanel extends JPanel
         catch (SQLException e) 
         {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
         catch(NullPointerException e)
         {
-        	
+        	    e.printStackTrace();
         }
         finally
         {
