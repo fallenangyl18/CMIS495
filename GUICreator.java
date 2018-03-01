@@ -1,4 +1,3 @@
-
 /**
  * *************************** REVISION HISTORY****************************************
  *
@@ -26,6 +25,15 @@
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
  *
+ *VERSION 1.3
+ *Update by Sumit Malhotra on 02/24/2018
+ *removed 1.1 methods and pop ups for editing and deleting
+ *updated editing method to support editing by selection and commiting edit with button text changes,
+ *and code to commit changes to the data table
+ *updated deleting method to support deleting by selected row and call to InventoryTable()
+ *added code for Database startup entries to populate database on startup
+ *added code for supporting database class and result set
+ *
  * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
  * SHARON WRITE HERE
  *
@@ -40,6 +48,10 @@
  * when the "OK" button is cleared after an inventory edit, the ID number is cleared out
  * as well as the rest of the fields.
  *
+ *
+ *VERSION 1.6 03/01/2018
+ *Sumit added methods to support updating the DataPanel, added exceptions for edit and
+ *OK buttons for ID, added JTable settings to support static columns and gridlines
  *
  ****************************************************************************************
  */
@@ -77,6 +89,7 @@ public class GUICreator extends JFrame implements ActionListener
 
     InventoryDatabase dbConn = new InventoryDatabase();
 
+
     //Create the GUI
     public GUICreator() throws SQLException
     {
@@ -99,6 +112,11 @@ public class GUICreator extends JFrame implements ActionListener
         ResultSet rs = dbConn.getAllActiveItems();
 
         jtable = new JTable(buildTableModel(rs));
+        jtable.setRowSelectionAllowed(true);
+        jtable.getTableHeader().setReorderingAllowed(false);
+        jtable.setShowGrid(true);
+        jtable.setGridColor(Color.BLACK);
+
 
         //Creating a JLabel for the menu
         JLabel menuLabel = new JLabel("Inventory: ");
@@ -323,6 +341,10 @@ public class GUICreator extends JFrame implements ActionListener
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
             }
+            catch(NumberFormatException e1)
+            {
+                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
+            }
         } else if (e.getSource() == removeButton)
         {
             try
@@ -334,28 +356,37 @@ public class GUICreator extends JFrame implements ActionListener
             }
         } else //else it's the OK button cuz there are no other buttons.
         {
-            String inventoryID = (inventoryIDTxt.getText());
-            String editItemEntry = (itemNameTextField.getText());
-            int editQty = parseInt(quantityTextField.getText());
-            String editExpire = expirationDateTextField.getText();
-            String editCat = itemCategory.getSelectedItem().toString();
-            String editNotes = notesTextField.getText();
-            if (inventoryID != null || !inventoryID.equals("0")) {
+            try
+            {
+                String inventoryID = (inventoryIDTxt.getText());
+                String editItemEntry = (itemNameTextField.getText());
+                int editQty = parseInt(quantityTextField.getText());
+                String editExpire = expirationDateTextField.getText();
+                String editCat = itemCategory.getSelectedItem().toString();
+                String editNotes = notesTextField.getText();
+                if (inventoryID != null || !inventoryID.equals("0")) {
 
-                int id = Integer.parseInt(inventoryID);
-                dbConn.updateItemByID(editItemEntry, editQty, editExpire, editCat, editNotes, id);
-                try {
-                    refreshTheTable();
+                    int id = Integer.parseInt(inventoryID);
+                    dbConn.updateItemByID(editItemEntry, editQty, editExpire, editCat, editNotes, id);
+                    try {
+                        refreshTheTable();
+                    }
+                    catch (SQLException exc)
+                    {
+                        exc.printStackTrace();
+                    }
+                    clearFields();
+                } else {
+                    JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
                 }
-                catch (SQLException exc)
-                {
-                    exc.printStackTrace();
-                }
-                clearFields();
-            } else {
-                JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all fields all filled.");
+            }
+            catch(NumberFormatException e1)
+            {
+                JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
             }
         }
+        data.countTotalInventory();
+        data.countFoodGroup();
     }
 
 
@@ -363,6 +394,7 @@ public class GUICreator extends JFrame implements ActionListener
     public static void main(String[] args) throws SQLException {
         GUICreator showTheGui = new GUICreator();
         showTheGui.setVisible(true);
+        // NotificationDialog nd= new NotificationDialog();
     }
 
     public static DefaultTableModel buildTableModel(ResultSet rs)
