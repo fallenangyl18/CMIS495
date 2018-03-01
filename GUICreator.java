@@ -396,7 +396,7 @@ public class GUICreator extends JFrame implements ActionListener
     public static void main(String[] args) throws SQLException {
         GUICreator showTheGui = new GUICreator();
         showTheGui.setVisible(true);
-        NotificationDialog nd= new NotificationDialog();
+       // NotificationDialog nd= new NotificationDialog();
     }
 
     public static DefaultTableModel buildTableModel(ResultSet rs)
