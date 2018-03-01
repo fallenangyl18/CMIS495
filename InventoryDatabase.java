@@ -18,6 +18,17 @@ package Inventory;
  * edited by Sharon Walker 2/19/2018 
  * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
  *
+ *
+ * version 1.2
+ * Edited 02/26/18 by Elizabeth Ruzich, cleaned up some of the code, cleaned
+ * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
+ * so everyone could access, including the professor.
+ *
+ * version 1.2 
+ * Edited 02/26/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
+ * and tableQuantityByTotal() 
+ *
+ *
  *****************************************************************************************/
 
 import java.sql.*;
@@ -409,57 +420,50 @@ public class InventoryDatabase
     }
 	
 	
-	
     public ResultSet tableQuantityByCategory() //additions by Sumit 02/16/2018 -- This needs to be revised
-	      //revised by Sharon Walker 2//19/2018
+    //revised by Sharon Walker 2//19/2018
     {
-    	    PreparedStatement preparedStatement = null;
-    	    ResultSet resultSet = null;
-    	    String sql = "SELECT Category , SUM(QTY) FROM InventoryApp where isDeleted = 0 GROUP BY Category;";
-    	    
-    	    try 
-    	    {
-    	        preparedStatement = conn.prepareStatement(sql);
-	        resultSet = preparedStatement.executeQuery(sql);
-    	    	conn.commit();
-    	    	preparedStatement.close();
-            } 
-    	    catch (SQLException e) 
-    	    {
-    	    	
-     		e.printStackTrace();
-             }
-    	  
-    	    return resultSet;
+        init();
+
+        ResultSet resultSet = null;
+        String sql = "SELECT category, SUM(QTY) FROM Inventory WHERE IsDeleted = 0 GROUP BY category;";
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+
+          //  stmt.close();
+            return resultSet;
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        return resultSet;
     }
    
     public ResultSet tableQuantityByTotal() //additions by Sumit 02/16/2018 --This needs to be revised
-	    //revised by Sharon Walker 2//19/2018
+    //revised by Sharon Walker 2//19/2018
     {
-    	  PreparedStatement preparedStatement = null;
-    	  ResultSet resultSet = null;
-    	  String sql = "SELECT SUM(QTY) FROM InventoryApp where isDeleted = 0;";
-    	 
-    	   try
-    	   {
-               preparedStatement = conn.prepareStatement(sql);
-    	       resultSet = preparedStatement.executeQuery(sql);
-    	       conn.commit();
-    	       preparedStatement.close();
-    	   }
-    	   catch (SQLException e )
-    	   {
-               e.printStackTrace();
-    	   }
-    	   catch(Exception e1)
-    	   {
-    		   
-    	   }
-    	   finally
-    	   {
-    		  
-    	   }
-    	   return rs;
+       init();      
+  
+        ResultSet resultSet = null;
+        String sql = "SELECT SUM(QTY) AS total FROM Inventory WHERE IsDeleted = 0;";
+
+        try 
+        {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+           // stmt.close();
+            return resultSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e1) {
+
+        } finally {
+        	return resultSet;
+        }
+     
     }
 
 
