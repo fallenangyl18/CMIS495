@@ -210,7 +210,7 @@ public class InventoryDatabase {
         return null;
     }
 
-    public ResultSet getItemsByExpireDate(Date currentdate) throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
+    public ResultSet getItemsByExpireDate() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
     {
         init();
         Statement stmt = conn.createStatement();
