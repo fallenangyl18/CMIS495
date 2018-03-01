@@ -1,6 +1,7 @@
-package Inventory;
+package inventory;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
@@ -35,7 +36,9 @@ public class NotificationDialog extends JDialog implements ActionListener
 		super();
 		
 	    Date currentDate = new Date(System.currentTimeMillis());
+	    db = new InventoryDatabase();
 		rs = db.getItemsByExpireDate(currentDate);
+		
 		table = new JTable(buildTableModel(rs));
 		
 		//TODO: Add sort by expiration
@@ -64,7 +67,15 @@ public class NotificationDialog extends JDialog implements ActionListener
 		
 		contentPanel.add(summaryPanel, BorderLayout.SOUTH);
 		add(contentPanel);
+		
+		setPreferredSize(new Dimension(600, 400));
+		setTitle(getClass().getSimpleName());
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setModal(true);
+        setVisible(true);
+        
 		pack();
+		
 	}
 	
 	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException 
