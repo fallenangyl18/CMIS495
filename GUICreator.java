@@ -36,7 +36,9 @@
  * some unhandled exceptions.
  *
  * VERSION 1.6 2/28/18 Beth changed the display size of the JScrollPane to make the display
- * larger and easier to read.
+ * larger and easier to read. Added inventoryIDTxt to the reset the text function so that
+ * when the "OK" button is cleared after an inventory edit, the ID number is cleared out
+ * as well as the rest of the fields.
  *
  *
  ****************************************************************************************
@@ -54,8 +56,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
-public class GUICreator extends JFrame implements ActionListener {
-
+public class GUICreator extends JFrame implements ActionListener
+{
     //Declaration of variables for options display text area (left side)
     //And inventory display (right side)
     //Declaration of Combo Box
@@ -262,6 +264,7 @@ public class GUICreator extends JFrame implements ActionListener {
         expirationDateTextField.setText("");
         itemCategory.setSelectedIndex(0);
         notesTextField.setText("");
+        inventoryIDTxt.setText("");
 
     }
 
