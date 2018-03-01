@@ -1,4 +1,3 @@
-
 /** ***************** REVISION HISTORY ****************************************************
  *  version 1.0
  *  Created by Sumit Malhotra 1/22/2018
@@ -22,38 +21,18 @@
  * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
  * so everyone could access, including the professor.
  *
- * Sharon fixed expiredate in insert statment
+ * version 1.3
+ * Sharon fixed expiredate in insert statment 02/28/2018
  **************************************************************************************** */
 
 import java.sql.*;
 import java.util.*;
 import java.sql.Date;
 
-public class InventoryDatabase {
-    //public static String getDbUrl() {
-    //	return DB_URL;
-    //}
-
-    //public static String getJdbcDriver() {
-    //	return JDBC_DRIVER;
-    //}
-    //public static String getUser() {
-    //	return USER;
-    //}
-//
-    //public static String getPass() {
-    //	return PASS;
-    //}
-    //JDBC driver name and database URL
-    //  private static final String JDBC_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    // private static final String DB_URL = "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=Inventory";  // This will change for everyone's computer - SW
-    //Database credentials
-    //  private static final String USER = "sqlDev";
-    //  private static final String PASS = "Passw0rd";
-    //query
+public class InventoryDatabase
+{
     private Connection conn = null;
     private Statement stmt = null;
-    //private ResultSet rs;
 
     public void init() {
         try {
@@ -313,13 +292,14 @@ public class InventoryDatabase {
         init();
 
         ResultSet resultSet = null;
-        String sql = "SELECT Category , SUM(QTY) FROM Inventory where isDeleted = 0 GROUP BY Category;";
+        String sql = "SELECT category, SUM(QTY) FROM Inventory WHERE IsDeleted = 0 GROUP BY category;";
 
         try {
-            Statement stmt = conn.createStatement();
-            resultSet = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
 
-            stmt.close();
+            //  stmt.close();
+            return resultSet;
         } catch (SQLException e) {
 
             e.printStackTrace();
@@ -334,21 +314,26 @@ public class InventoryDatabase {
         init();
 
         ResultSet resultSet = null;
-        String sql = "SELECT SUM(QTY) FROM Inventory where isDeleted = 0;";
+        String sql = "SELECT SUM(QTY) AS total FROM Inventory WHERE IsDeleted = 0;";
 
-        try {
-            Statement stmt = conn.createStatement();
-            resultSet = stmt.executeQuery(sql);
-
-            stmt.close();
+        try
+        {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+            // stmt.close();
+            return resultSet;
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (Exception e1) {
+        } catch (Exception e1)
+        {
+            e1.printStackTrace();
 
-        } finally {
-
+        } finally
+        {
+            return resultSet;
         }
-        return null;
+
     }
+
 
 }
