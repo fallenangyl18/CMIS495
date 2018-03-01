@@ -80,7 +80,7 @@ public class InventoryDatabase {
         PreparedStatement prepareStatement = null;
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE InventoryID = ?";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE InventoryID = ?";
         try {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setInt(1, ID);
@@ -112,7 +112,7 @@ public class InventoryDatabase {
             init();
             String sql;
             Statement stmt = conn.createStatement();
-            sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
+            sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException se) {
@@ -129,7 +129,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -147,7 +147,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             conn.commit();
@@ -165,7 +165,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -181,7 +181,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -198,7 +198,7 @@ public class InventoryDatabase {
         init();
         Statement stmt = conn.createStatement();
         String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
@@ -216,7 +216,7 @@ public class InventoryDatabase {
         PreparedStatement prepareStatement = null;
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, ExpireDate, DateEntered, LastUpdated, notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, DateEntered, LastUpdated, notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,?) and isDeleted = 0";
         try {
             prepareStatement = conn.prepareStatement(sql);
             prepareStatement.setDate(1, currentdate);
