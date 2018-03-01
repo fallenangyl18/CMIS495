@@ -217,7 +217,7 @@ public class DataPanel extends JPanel
                     case "Meat":
                         meatCount = rs.getInt(2); //4
                         break;
-                    case "Non-perishable":
+                    case "Non-Perishable":
                         nonperishableCount = rs.getInt(2); //5
                         break;
                     case "Produce":
