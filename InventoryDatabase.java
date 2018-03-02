@@ -1,3 +1,4 @@
+package inventory;
 /** ***************** REVISION HISTORY ****************************************************
  *  version 1.0
  *  Created by Sumit Malhotra 1/22/2018
