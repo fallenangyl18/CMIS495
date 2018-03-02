@@ -54,7 +54,9 @@
  *OK buttons for ID, added JTable settings to support static columns and gridlines
  * Beth added condition to limit the user to “Gross” entries (144 maximum quantity);
  * Worked on exception handling in the buttons for if users press the add/edit/remove
- * buttons while no fields are filled out
+ * buttons while no fields are filled out, making sure all fields are filled out when
+ * the user wants to enter things. Also added a "Check Expiring Items" button for Fred's
+ * notification class.
  *
  ****************************************************************************************
  */
@@ -341,7 +343,7 @@ public class GUICreator extends JFrame implements ActionListener
                 }
             } catch (NumberFormatException exc)
             {
-                JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out.");
+                JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out correctly.");
             }
         } else if (e.getSource() == editButton) {
             try {
@@ -357,22 +359,29 @@ public class GUICreator extends JFrame implements ActionListener
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
+                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out correctly.");
             }
             catch(NumberFormatException e1)
             {
-                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out.");
+                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out correctly.");
             }
         } else if (e.getSource() == removeButton)
         {
             try
             {
-                dbConn.deleteByID(parseInt(inventoryIDTxt.getText()));
-                refreshTheTable();
+                try
+                {
+                    dbConn.deleteByID(parseInt(inventoryIDTxt.getText()));
+                    refreshTheTable();
+                }
+                catch (NumberFormatException numEx)
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter the ID of the item you wish to remove.");
+                }
             } catch (Exception ex) {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (e.getSource() == okButton) 
+        } else if (e.getSource() == okButton)
         {
             try
             {
