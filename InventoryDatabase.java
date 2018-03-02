@@ -1,6 +1,5 @@
 package inventory;
 
-
 /** ***************** REVISION HISTORY ****************************************************
  *  version 1.0
  *  Created by Sumit Malhotra 1/22/2018
@@ -11,30 +10,42 @@ package inventory;
  *  edited by Sharon Walker 1/23/2018
  *  removed create table functions and renamed functions to be clearer on their purpose
  *
- *  version 1.1
+ *  version 1.2
  *  edited 02/16/2018 Sumit Malhotra
  *  created tableQuantityByCategory(), tableQuanityByTotal() to support
  *  getting quantity totals from database, methods need to be revised
  *
+ * Version 1.3
  * edited by Sharon Walker 2/19/2018
  * revised methods  tableQuantityByCategory(), tableQuanityByTotal()
  *
- * version 1.2
+ * version 1.4
  * Edited 02/26/18 by Elizabeth Ruzich, cleaned up some of the code, cleaned
  * up duplicate code. Moved the database to Amazon AWS for SQL Server, made the connections
  * so everyone could access, including the professor.
  *
+ **version 1.5
+ *Edited 02/27/2018 by Sumit Malhotra, revised and edited methods for tableQuantityByCategory()
+ *and tableQuantityByTotal(), getAllActiveItems()
+ *
+ * version 1.6
+ * Sharon 02/28/2018 Sharon Updated several select statements to not include dateentered
+ * lastupdated isdeleted.  truncated time off of expiredate, removed argument in
+ * getitemsbyExpiredate, reworked structure of getitemsbyexpiredate, fixed <= to >= error
+ *
+ * version 1.7
+ * 03/01/2018 by Elizabeth Ruzich, went through and deleted unused methods,
+ * variables, and commented out code
+ *
  **************************************************************************************** */
 
 import java.sql.*;
-import java.util.*;
 import java.sql.Date;
 
-public class InventoryDatabase {
+public class InventoryDatabase
+{
 
     private Connection conn = null;
-    private Statement stmt = null;
-    //private ResultSet rs;
 
     public void init() {
         try {
@@ -47,29 +58,10 @@ public class InventoryDatabase {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e);
         }
-   }
- 
- /*    public void init(){
-      try
-      {
-       if(conn == null)
-       {
-       Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-      conn=DriverManager.getConnection(
-              "jdbc:sqlserver://localhost\\sqlexpress2017;databaseName=InventoryApp","sqldev", "Passw0rd"
-               );
-        }
-      else
-      {
-              getMyConnection();
-      }
-      }
-      catch(ClassNotFoundException | SQLException e){
-         System.out.println(e);
-       }
-  } */
-    public Connection getMyConnection() {
+    }
 
+    public Connection getMyConnection()
+    {
         return conn;
     }
 
@@ -87,16 +79,6 @@ public class InventoryDatabase {
             rs = prepareStatement.executeQuery();
             return rs;
 
-            // while (rs.next())
-            // {
-            //     int inventoryID = rs.getInt("InventoryID");
-            //    String itemName = rs.getString("ItemName");
-            //    int qty = rs.getInt("QTY");
-            //    java.util.Date expDate = rs.getDate("ExpireDate");
-            //    java.util.Date dateEntered = rs.getDate("DateEntered");
-            //    java.util.Date lastUpdated = rs.getDate("LastUpdated");
-            //   boolean isDeleted = rs.getBoolean("IsDeleted");
-            // }
         } catch (SQLException se) {
         } catch (Exception e) {
         } finally {
@@ -115,97 +97,14 @@ public class InventoryDatabase {
             sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0";
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
-        } catch (SQLException se) {
-
-        } catch (Exception e) {
-        } finally {
-
-        }
-        return null;
-    }
-
-    public ResultSet getAllActiveProduceItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
-    {
-        init();
-        Statement stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Produce'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            return rs;
-
-        } catch (SQLException se) {
-        } catch (Exception e) {
-        } finally {
-
-        }
-        return null;
-    }
-
-    public ResultSet getAllActiveMeatItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
-    {
-        init();
-        Statement stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Meat'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            conn.commit();
-            return rs;
-        } catch (SQLException se) {
-        } catch (Exception e) {
-        } finally {
-
-        }
-        return null;
-    }
-
-    public ResultSet getAllActiveDairyItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
-    {
-        init();
-        Statement stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Dairy'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            return rs;
-        } catch (SQLException se) {
-        } catch (Exception e) {
-        } finally {
-        }
-        return null;
-    }
-
-    public ResultSet getAllActiveNonParishablesItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
-    {
-        init();
-        Statement stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category like 'non%'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            return rs;
-        } catch (SQLException se) {
-        } catch (Exception e) {
-        } finally {
-
-        }
-        return null;
-    }
-
-    public ResultSet getAllActiveLiquidItems() throws SQLException // updated function to use prepared statements and replaced the * with actual columns 1-23-18 Sharon
-    {
-        init();
-        Statement stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE Isdeleted = 0 and category = 'Liquids'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            return rs;
-        } catch (SQLException se) {
-        } catch (Exception e) {
-        } finally {
-
+        } catch (SQLException se)
+        {
+            se.printStackTrace();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        } finally
+        {
         }
         return null;
     }
@@ -216,16 +115,16 @@ public class InventoryDatabase {
         Statement stmt = conn.createStatement();
         String sql;
         ResultSet rs = null;
-        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE ExpireDate >= DATEADD(day,3,GETDate()) and isDeleted = 0";
+        sql = "SELECT InventoryID, ItemName, QTY, convert(varchar,ExpireDate,101) as ExpireDate, notes, category FROM Inventory WHERE ExpireDate <= DATEADD(day,3,GETDate()) and isDeleted = 0";
         try {
-           
+
             //prepareStatement.setDate(1, currentdate);
-            rs = stmt.executeQuery(sql);           
+            rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException se) {
         } catch (Exception e) {
         } finally {
-            
+
         }
         return null;
     }
@@ -246,8 +145,12 @@ public class InventoryDatabase {
                 prepStmt.executeUpdate();
             }
 
-        } catch (SQLException se) {
-        } catch (Exception e) {
+        } catch (SQLException se)
+        {
+            se.printStackTrace();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         } finally {
 
         }
@@ -260,8 +163,6 @@ public class InventoryDatabase {
             PreparedStatement prepStmt;
             String sql = "UPDATE Inventory SET ItemName = ?, QTY =?, ExpireDate =?, LastUpdated = getdate(), IsDeleted = 0 , notes = ?, category = ? WHERE InventoryID = ?";
             prepStmt = conn.prepareStatement(sql);
-            //Array array = conn.createArrayOf("VARCHAR", data.toArray());
-
             prepStmt.setString(1, iname);
             prepStmt.setInt(2, qty);
             prepStmt.setString(3, expire);
@@ -270,8 +171,12 @@ public class InventoryDatabase {
             prepStmt.setInt(6, ID);
             prepStmt.executeQuery();
 
-        } catch (SQLException se) {
-        } catch (Exception e) {
+        } catch (SQLException se)
+        {
+            se.printStackTrace();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         } finally {
 
         }
@@ -287,8 +192,12 @@ public class InventoryDatabase {
             prepStmt.setInt(1, ID);
             prepStmt.executeQuery();
 
-        } catch (SQLException se) {
-        } catch (Exception e) {
+        } catch (SQLException se)
+        {
+            se.printStackTrace();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         } finally {
 
         }
@@ -300,20 +209,19 @@ public class InventoryDatabase {
         init();
 
         ResultSet resultSet = null;
-        String sql = "SELECT Category , SUM(QTY) FROM Inventory where isDeleted = 0 GROUP BY Category;";
-
+        String sql = "SELECT category, SUM(QTY) FROM Inventory WHERE IsDeleted = 0 GROUP BY category;";
         try {
-            Statement stmt = conn.createStatement();
-            resultSet = stmt.executeQuery(sql);
-
-            stmt.close();
-        } catch (SQLException e) {
-
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+            return resultSet;
+        } catch (SQLException e)
+        {
             e.printStackTrace();
         }
 
         return resultSet;
     }
+
 
     public ResultSet tableQuantityByTotal() //additions by Sumit 02/16/2018 --This needs to be revised
     //revised by Sharon Walker 2//19/2018
@@ -321,21 +229,21 @@ public class InventoryDatabase {
         init();
 
         ResultSet resultSet = null;
-        String sql = "SELECT SUM(QTY) FROM Inventory where isDeleted = 0;";
+        String sql = "SELECT SUM(QTY) AS total FROM Inventory WHERE IsDeleted = 0;";
 
-        try {
-            Statement stmt = conn.createStatement();
-            resultSet = stmt.executeQuery(sql);
-
-            stmt.close();
+        try
+        {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+            return resultSet;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e1) {
-
+            e1 .printStackTrace();
         } finally {
-
+            return resultSet;
         }
-        return null;
+
     }
 
 }
