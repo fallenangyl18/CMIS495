@@ -2,10 +2,9 @@
  * *************************** REVISION HISTORY****************************************
  *
  *
- * Version 1.0 created by Beth 2/10/18 Created all buttons, text fields, labels,
+ * Version 1.0 created by Beth 01/16/18 Created all buttons, text fields, labels,
  * GUI components, action listener, timestamp function JPanels, MAIN, action
  * listener variables
- *
  *
  * VERSION 1.1 Updated by Sumit Malhotra on 02/15/2018 removed combobox and
  * button for sort update add method to support InventoryTable.java update edit
@@ -25,7 +24,7 @@
  * be enough. toLowerCase all strings for fast searching to make sure we don't
  * miss stuff.
  *
- *VERSION 1.3
+ *VERSION 1.4
  *Update by Sumit Malhotra on 02/24/2018
  *removed 1.1 methods and pop ups for editing and deleting
  *updated editing method to support editing by selection and commiting edit with button text changes,
@@ -34,24 +33,28 @@
  *added code for Database startup entries to populate database on startup
  *added code for supporting database class and result set
  *
- * VERSION 1.4 2/25/18 Sharon revamped, hooked Database to the thing and yay it worked
- * SHARON WRITE HERE
+ * VERSION 1.5 2/25/18 added inventoryID textbox and ok button.  Added okbutton and removebutton to
+ * actionlistener. Reworked if statement.  added and tested add item, update and delete item
+ * using database. Populates textboxes on edit click, populates jtable on startup.
+ * Soft deletes item from database on delete click
  *
- * VERSION 1.5 2/27/18 Beth worked on, took away erroneous notifications, we nixed
+ * VERSION 1.6 2/27/18 Beth worked on, took away erroneous notifications, we nixed
  * the search feature for the sake of time, cleaned up code a little, error checking
  * for invalid and null entries. Worked with Sharon on refreshing the JScrollPane when
  * items are deleted from or added to the inventory. Wrote a refresh function, handled
  * some unhandled exceptions.
  *
- * VERSION 1.6 2/28/18 Beth changed the display size of the JScrollPane to make the display
+ * VERSION 1.7 2/28/18 Beth changed the display size of the JScrollPane to make the display
  * larger and easier to read. Added inventoryIDTxt to the reset the text function so that
  * when the "OK" button is cleared after an inventory edit, the ID number is cleared out
- * as well as the rest of the fields.
- *
- *
- *VERSION 1.6 03/01/2018
+ * as well as the rest of the fields. Removed TimeStamp function, was no longer needed
+ * *
+ *VERSION 1.8 03/01/2018
  *Sumit added methods to support updating the DataPanel, added exceptions for edit and
  *OK buttons for ID, added JTable settings to support static columns and gridlines
+ * Beth added condition to limit the user to “Gross” entries (144 maximum quantity);
+ * Worked on exception handling in the buttons for if users press the add/edit/remove
+ * buttons while no fields are filled out
  *
  ****************************************************************************************
  */
@@ -76,6 +79,7 @@ public class GUICreator extends JFrame implements ActionListener
     private JButton addButton;
     private JButton editButton;
     private JButton removeButton;
+    private JButton checkExpiringButton;
     private JTextField itemNameTextField;
     private JTextField quantityTextField;
     private JTextField expirationDateTextField;
@@ -88,6 +92,7 @@ public class GUICreator extends JFrame implements ActionListener
     private JButton okButton;
 
     InventoryDatabase dbConn = new InventoryDatabase();
+    NotificationDialog nd = new NotificationDialog();
 
 
     //Create the GUI
@@ -97,7 +102,7 @@ public class GUICreator extends JFrame implements ActionListener
         super("Pantry Inventory");
         setLayout(new BorderLayout());
         setBackground(Color.white);
-        setSize(900, 650);
+        setSize(1024, 768);
 
         //Creating a "container" for the panels to sit in
         JPanel containerPanel = new JPanel();
@@ -132,6 +137,10 @@ public class GUICreator extends JFrame implements ActionListener
         removeButton = new JButton("Remove");
         removeButton.setToolTipText("Remove items from the databse.");
         removeButton.addActionListener(this);
+        checkExpiringButton = new JButton("Check Expiring Items");
+        checkExpiringButton.setToolTipText("Check what items are expiring soon or already expired.");
+        checkExpiringButton.addActionListener(this);
+
 
         inventoryIDTxt = new JTextField();
         inventoryIDTxt.setMaximumSize(new Dimension(Integer.MAX_VALUE, inventoryIDTxt.getPreferredSize().height));
@@ -234,7 +243,7 @@ public class GUICreator extends JFrame implements ActionListener
         notesTextPanel.setLayout(new BoxLayout(notesTextPanel, BoxLayout.Y_AXIS));
         notesTextPanel.add(notesLabel);
         notesTextPanel.add(notesTextField);
-        notesTextPanel.setBorder(new EmptyBorder(10, 5, 10, 5));
+        notesTextPanel.setBorder(new EmptyBorder(10, 5, 5, 5));
         leftPanel.add(notesTextPanel);
 
         //JPanel for sort dropdown
@@ -246,13 +255,17 @@ public class GUICreator extends JFrame implements ActionListener
 
         //Creating a panel to sit inside of the left panel that holds the combobox
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
+        buttonsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         buttonsPanel.add(addButton);
         buttonsPanel.add(editButton);
         buttonsPanel.add(okButton);
         buttonsPanel.add(removeButton);
         leftPanel.add(buttonsPanel);
 
+        JPanel checkExpPanel = new JPanel();
+        checkExpPanel.setLayout(new FlowLayout());
+        checkExpPanel.add(checkExpiringButton);
+        leftPanel.add(checkExpPanel);
         //Adding all of the components that are in the left panel into the overall container panel.
         containerPanel.add(leftPanel);
 
@@ -311,7 +324,7 @@ public class GUICreator extends JFrame implements ActionListener
                 String expirationEntry = expirationDateTextField.getText();
                 String categoryEntry = itemCategory.getSelectedItem().toString();
                 String notesEntry = notesTextField.getText();
-                if ((itemEntry != "") && quantityEntry != 0 && expirationEntry != "")
+                if ((itemEntry != "") && quantityEntry != 0 && quantityEntry <= 144 && expirationEntry != "" && !expirationEntry.equals("MM-DD-YYYY") && !categoryEntry.equals("Select Category"))
                 {
                     try {
                         dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
@@ -320,6 +333,11 @@ public class GUICreator extends JFrame implements ActionListener
                     } catch (SQLException ex) {
                         Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out completely. \n"
+                    + "Note that 0 items or more than 144 items are invalid entries.");
                 }
             } catch (NumberFormatException exc)
             {
@@ -354,7 +372,7 @@ public class GUICreator extends JFrame implements ActionListener
             } catch (Exception ex) {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else //else it's the OK button cuz there are no other buttons.
+        } else if (e.getSource() == okButton) 
         {
             try
             {
@@ -384,6 +402,10 @@ public class GUICreator extends JFrame implements ActionListener
             {
                 JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
             }
+        }
+        else //else it's the check inventory button
+        {
+            //FRED INSERT YO SHIT HERE HOMIE
         }
         data.countTotalInventory();
         data.countFoodGroup();
