@@ -73,9 +73,9 @@ public class NotificationDialog extends JDialog implements ActionListener
 		
 		westPanel = new JPanel();
 		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
-		westPanel.add(expiringSoon);
-		westPanel.add(expiringNow);
 		westPanel.add(expired);
+		westPanel.add(expiringNow);
+		westPanel.add(expiringSoon);
 		
 		Date date;
 		int cExpiringSoon = 0;
@@ -106,9 +106,9 @@ public class NotificationDialog extends JDialog implements ActionListener
 		
 		eastPanel = new JPanel();
 		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
-		eastPanel.add(countExpiringSoon);
-		eastPanel.add(countExpiringNow);
 		eastPanel.add(countExpired);
+		eastPanel.add(countExpiringNow);
+		eastPanel.add(countExpiringSoon);
 		
 		summaryPanel.add(westPanel, BorderLayout.WEST);
 		summaryPanel.add(eastPanel, BorderLayout.EAST);
