@@ -1,8 +1,7 @@
 package inventory;
 
 
-
-/*************************** REVISION HISTORY ****************************************
+/*************************** REVISION HISTORY ************************************************
  *
  *
  * VERSION 1.0
@@ -23,20 +22,24 @@ package inventory;
  * VERSION 1.3
  * Updated by Elizabeth Ruzich, removed a "new" database object, no need for it in this class.
  *
- * version 1.3
+ * VERSION 1.3
  * Edited 02/28/2018 by Sumit Malhotra, creates a panel with a new format, borders, new grid 
  * and layout arrangements to support 3x2 gridlayout. Updated to support result sets from database to update category 
  * JLabels, JProgressBars, and to calculate percentages for inventory totals
- **************************************************************************************/
+ * 
+ * VERSION 1.4
+ * Edited 03/02/2018 by Sumit Malhotra updated progress bar label values and bars to show percentages
+ * to 2 decimal places and rounded percentages
+ ************************************************************************************************/
 
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.*;
 import java.util.*;
 import java.sql.*;
-import java.util.*;
+import java.text.DecimalFormat;
+
 
 public class DataPanel extends JPanel
 {
@@ -223,7 +226,7 @@ public class DataPanel extends JPanel
 	            case "Meat":
 	              	meatCount = rs.getInt(2); //4
 	            		break;
-	            case "Non-perishable":
+	            case "Non-Perishable":
 	            	    nonperishableCount = rs.getInt(2); //5
 	            		break;
 	            case "Produce":
@@ -234,38 +237,45 @@ public class DataPanel extends JPanel
 	            }
 	        }
 	        
-	       
-	        produceJPB.setValue( Math.round( (produceCount*100) / total ) );
+	        DecimalFormat df = new DecimalFormat("##.00");
+	        
+	        produceJPB.setString(""+  df.format((produceCount*100.0) / total) + "%" );
+	        produceJPB.setValue((produceCount*100) / total);
 	        produceJPB.setStringPainted(true);
 	        producelbl.setText("Produce: " + produceCount + "/" + total  );
 	        produce.revalidate();
 	        produce.repaint();
 	        
-	        meatJPB.setValue( Math.round( ( meatCount*100 ) / total ) );
+	        meatJPB.setString( "" + df.format( ( meatCount*100.0 ) / total) + "%" );
+	        meatJPB.setValue(( meatCount*100 ) / total);
 	        meatJPB.setStringPainted(true);
 	        meatlbl.setText("Meat: "  + meatCount + "/" + total);
 	        meat.revalidate();
 	        meat.repaint();
 	        
-	        dairyJPB.setValue( Math.round( ( dairyCount*100) / total ) );
+	        dairyJPB.setString( "" + df.format( ( dairyCount*100.0 ) / total) + "%");
+	        dairyJPB.setValue(( dairyCount*100 ) / total);
 	        dairyJPB.setStringPainted(true);
 	        dairylbl.setText("Dairy: " + dairyCount + "/" + total );
 	        dairy.revalidate();
 	        dairy.repaint();
 	        
-	        nonperishableJPB.setValue( Math.round( ( nonperishableCount*100 ) / total ) );
+	        nonperishableJPB.setString( "" + df.format( ( nonperishableCount*100.0 ) / total) + "%" );
+	        nonperishableJPB.setValue(( nonperishableCount*100 ) / total);
 	        nonperishableJPB.setStringPainted(true);
 	        nonperishablelbl.setText("Nonperishable: " + nonperishableCount + "/" + total );
 	        nonperishable.revalidate();
 	        nonperishable.repaint();
 	        
-	        grainsJPB.setValue(Math.round((grainsCount*100)/total));
+	        grainsJPB.setString( "" + df.format( ( grainsCount*100.0 ) / total) + "%" );
+	        grainsJPB.setValue(( grainsCount*100 ) / total);
 	        grainsJPB.setStringPainted(true);
 	        grainslbl.setText("Grains: " + + grainsCount + "/" + total );
 	        grains.revalidate();
 	        grains.repaint();
 	        
-	        liquidsJPB.setValue( Math.round( ( liquidsCount*100 ) / total ) );
+	        liquidsJPB.setString( "" + df.format( ( liquidsCount*100.0 ) / total) + "%" );
+	        liquidsJPB.setValue(( liquidsCount*100 ) / total);
 	        liquidsJPB.setStringPainted(true);
 	        liquidslbl.setText("Liquids: " + + liquidsCount + "/" + total);
 	        liquids.revalidate();
@@ -288,4 +298,3 @@ public class DataPanel extends JPanel
     }
 
 }
-
