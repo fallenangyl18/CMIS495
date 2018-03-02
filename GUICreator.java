@@ -59,6 +59,9 @@ package inventory;
  * the user wants to enter things. Also added a "Check Expiring Items" button for Fred's
  * notification class.
  *
+ * VERSION 1.9 03/02/2018
+ * Beth cleaned up unused code, added comments.
+ *
  ****************************************************************************************
  */
 
@@ -125,7 +128,6 @@ public class GUICreator extends JFrame implements ActionListener
         jtable.setShowGrid(true);
         jtable.setGridColor(Color.BLACK);
 
-
         //Creating a JLabel for the menu
         JLabel menuLabel = new JLabel("Inventory: ");
         //creating the buttons and adding their action listeners
@@ -143,7 +145,6 @@ public class GUICreator extends JFrame implements ActionListener
         checkExpiringButton = new JButton("Check Expiring Items");
         checkExpiringButton.setToolTipText("Check what items are expiring soon or already expired.");
         checkExpiringButton.addActionListener(this);
-
 
         inventoryIDTxt = new JTextField();
         inventoryIDTxt.setMaximumSize(new Dimension(Integer.MAX_VALUE, inventoryIDTxt.getPreferredSize().height));
@@ -279,19 +280,20 @@ public class GUICreator extends JFrame implements ActionListener
         rightPanel.setBorder(new EmptyBorder(20, 10, 20, 10));
 
         //Jpanel to hold the large display text area
+        //that houses the Inventory.
         JPanel inventoryDisplayPanel = new JPanel();
         inventoryDisplayPanel.setLayout(new BoxLayout(inventoryDisplayPanel, BoxLayout.Y_AXIS));
         inventoryDisplayPanel.add(invDisplayLabel);
         inventoryDisplayPanel.add(invDisplayPane);
-        JPanel searchPnl = new JPanel();
-
-        inventoryDisplayPanel.add(searchPnl);
         rightPanel.add(inventoryDisplayPanel);
         containerPanel.add(rightPanel);
 
+        //adds Sumit's data panel
         add(data, BorderLayout.SOUTH);
     }
 
+    //function that resets the text fields
+    //and position of the combobox when buttons are pressed.
     private void clearFields()
     {
         itemNameTextField.setText("");
@@ -318,18 +320,24 @@ public class GUICreator extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        //if the action performed is the add button was pressed
         if (e.getSource() == addButton)
         {
             try
             {
+                //creating variables from the user's input
                 String itemEntry = itemNameTextField.getText();
                 int quantityEntry = Integer.parseInt(quantityTextField.getText());
                 String expirationEntry = expirationDateTextField.getText();
                 String categoryEntry = itemCategory.getSelectedItem().toString();
                 String notesEntry = notesTextField.getText();
+                //if the item entry isn't blank, the quantity is not zero and is less than or equal to 144
+                //and if the expiration entry is not default and the category is not default, do the thing.
                 if ((itemEntry != "") && quantityEntry != 0 && quantityEntry <= 144 && expirationEntry != "" && !expirationEntry.equals("MM-DD-YYYY") && !categoryEntry.equals("Select Category"))
                 {
-                    try {
+                    try
+                    {
+                        //insert item to the database, clear the text fields, refresh the table and update it to reflect the changes.
                         dbConn.insertItem(itemEntry, quantityEntry, expirationEntry, categoryEntry, notesEntry);
                         clearFields();
                         refreshTheTable();
@@ -339,63 +347,76 @@ public class GUICreator extends JFrame implements ActionListener
                 }
                 else
                 {
+                    //else if the things are not all filled out, tell the user to fill the things out.
                     JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out completely. \n"
                             + "Note that 0 items or more than 144 items are invalid entries.");
                 }
             } catch (NumberFormatException exc)
             {
+                //catch it if the person tries to enter "dog" or a non-number into the quantity field.
                 JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out correctly.");
             }
+            //if the button that was pressed was edit
         } else if (e.getSource() == editButton) {
             try {
+                //get the result for that inventoryID from the database
                 ResultSet rs = dbConn.getItemByID(parseInt(inventoryIDTxt.getText()));
-                while (rs.next()) {
-                    int inventoryID = rs.getInt("InventoryID");
+                while (rs.next())
+                {
+                    //edit the fields with the user's new entries
                     itemNameTextField.setText(rs.getString("ItemName"));
                     quantityTextField.setText(rs.getString("QTY"));
                     expirationDateTextField.setText(rs.getString("ExpireDate"));
                     notesTextField.setText(rs.getString("notes"));
                     itemCategory.setSelectedItem(rs.getString("category"));
-
                 }
-            } catch (SQLException ex) {
+            } catch (SQLException ex)
+            {
+                //otherwise log the errors and tell the user to make sure their fields have all been filled out.
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out correctly.");
             }
             catch(NumberFormatException e1)
             {
                 JOptionPane.showMessageDialog(null, "Please make sure that all necessary fields are filled out correctly.");
             }
+            //else if the user clicks the remove button
         } else if (e.getSource() == removeButton)
         {
             try
             {
                 try
                 {
+                    //first try to get the database and delete by the ID
                     dbConn.deleteByID(parseInt(inventoryIDTxt.getText()));
                     refreshTheTable();
                     clearFields();
                 }
+                //catch if they haven't entered in the ID correctly.
                 catch (NumberFormatException numEx)
                 {
                     JOptionPane.showMessageDialog(null, "Please enter the ID of the item you wish to remove.");
                 }
+                //then catch database errors
             } catch (Exception ex)
             {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
             }
+            //if the source is the ok button
         } else if (e.getSource() == okButton)
         {
             try
             {
+                //commit the changes
                 String inventoryID = (inventoryIDTxt.getText());
                 String editItemEntry = (itemNameTextField.getText());
                 int editQty = parseInt(quantityTextField.getText());
                 String editExpire = expirationDateTextField.getText();
                 String editCat = itemCategory.getSelectedItem().toString();
                 String editNotes = notesTextField.getText();
-                if (inventoryID != null || !inventoryID.equals("0")) {
-
+                //as long as the ID isn't null or zero....
+                if (inventoryID != null || !inventoryID.equals("0"))
+                {
+                    //update the items in the database, and refresh teh table
                     int id = Integer.parseInt(inventoryID);
                     dbConn.updateItemByID(editItemEntry, editQty, editExpire, editCat, editNotes, id);
                     try {
@@ -405,8 +426,10 @@ public class GUICreator extends JFrame implements ActionListener
                     {
                         exc.printStackTrace();
                     }
+                    //then clear the fields
                     clearFields();
                 } else {
+                    //else tell the user there was an error and to fill out their form correctly.
                     JOptionPane.showMessageDialog(null, "There was an error updating this entry. Please make sure all necessary fields are filled out.");
                 }
             }
@@ -417,13 +440,17 @@ public class GUICreator extends JFrame implements ActionListener
         }
         else //else it's the check inventory button
         {
-            try {
+            try
+            {
                 @SuppressWarnings("unused")
+                 //try to create the new dialog box.
                 NotificationDialog nd= new NotificationDialog();
-            } catch (SQLException e1) {
+            } catch (SQLException e1)
+            {
                 e1.printStackTrace();
             }
         }
+        //do the data panel inventory and foodgroup stuff at the bottom of the gui
         data.countTotalInventory();
         data.countFoodGroup();
     }
@@ -459,7 +486,5 @@ public class GUICreator extends JFrame implements ActionListener
         }
 
         return new DefaultTableModel(data, columnNames);
-
     }
-
 }
