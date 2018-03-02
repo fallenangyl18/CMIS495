@@ -1,5 +1,17 @@
 package inventory;
 
+/*
+ * NotificationDialog class of the Inventory program
+ * CMSC 495
+ * Fred Pletz
+ * 
+ * This class extends JDialog and is used as a pop-up notification to inform
+ * the user of expiring and expired items.  The notificaiton shows a table
+ * of all items in the database expiring within 3 days, or already expired,
+ * and a count of items by expiring soon (next three days), expiring today,
+ * and expired.
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -49,6 +61,7 @@ public class NotificationDialog extends JDialog implements ActionListener
 		
 		super();
 		
+		//gets resultSet from the database using the getItemsByExpireDate function
 	    Date currentDate = new Date(System.currentTimeMillis());
 	    db = new InventoryDatabase();
 		rs = db.getItemsByExpireDate(currentDate);
@@ -82,6 +95,7 @@ public class NotificationDialog extends JDialog implements ActionListener
 		int cExpiringNow = 0;
 		int cExpired = 0;
 		
+		//counts for classes of expiring items
 		for (int i = 0; i < table.getRowCount(); i++) {
 			try {
 				date = new Date(new SimpleDateFormat("MM/dd/yyyy").parse((String) table.getValueAt(i, 3)).getTime());
@@ -130,6 +144,7 @@ public class NotificationDialog extends JDialog implements ActionListener
 		
 	}
 	
+	//this method converts ResultSet into a DefaultTableModel with column headers and rows of data
 	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException 
 	{
 
