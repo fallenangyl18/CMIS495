@@ -1,5 +1,6 @@
-/**
- * *************************** REVISION HISTORY****************************************
+package inventory;
+
+/***************************** REVISION HISTORY****************************************
  *
  *
  * Version 1.0 created by Beth 01/16/18 Created all buttons, text fields, labels,
@@ -52,7 +53,7 @@
  *VERSION 1.8 03/01/2018
  *Sumit added methods to support updating the DataPanel, added exceptions for edit and
  *OK buttons for ID, added JTable settings to support static columns and gridlines
- * Beth added condition to limit the user to “Gross” entries (144 maximum quantity);
+ * Beth added condition to limit the user to Gross entries (144 maximum quantity);
  * Worked on exception handling in the buttons for if users press the add/edit/remove
  * buttons while no fields are filled out, making sure all fields are filled out when
  * the user wants to enter things. Also added a "Check Expiring Items" button for Fred's
@@ -60,6 +61,7 @@
  *
  ****************************************************************************************
  */
+
 import java.awt.*;
 import java.awt.event.*;
 import static java.lang.Integer.parseInt;
@@ -94,7 +96,6 @@ public class GUICreator extends JFrame implements ActionListener
     private JButton okButton;
 
     InventoryDatabase dbConn = new InventoryDatabase();
-    NotificationDialog nd = new NotificationDialog();
 
 
     //Create the GUI
@@ -414,7 +415,12 @@ public class GUICreator extends JFrame implements ActionListener
         }
         else //else it's the check inventory button
         {
-            //FRED INSERT YO SHIT HERE HOMIE
+        	try {
+				@SuppressWarnings("unused")
+				NotificationDialog nd= new NotificationDialog();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
         }
         data.countTotalInventory();
         data.countFoodGroup();
@@ -425,7 +431,7 @@ public class GUICreator extends JFrame implements ActionListener
     public static void main(String[] args) throws SQLException {
         GUICreator showTheGui = new GUICreator();
         showTheGui.setVisible(true);
-        // NotificationDialog nd= new NotificationDialog();
+        NotificationDialog nd= new NotificationDialog();
     }
 
     public static DefaultTableModel buildTableModel(ResultSet rs)
