@@ -1,5 +1,3 @@
-package inventory;
-
 /***************************** REVISION HISTORY****************************************
  *
  *
@@ -292,14 +290,14 @@ public class GUICreator extends JFrame implements ActionListener
         add(data, BorderLayout.SOUTH);
     }
 
-    private void clearFields() {
+    private void clearFields()
+    {
         itemNameTextField.setText("");
         quantityTextField.setText("");
         expirationDateTextField.setText("");
         itemCategory.setSelectedIndex(0);
         notesTextField.setText("");
         inventoryIDTxt.setText("");
-
     }
 
 
@@ -340,7 +338,7 @@ public class GUICreator extends JFrame implements ActionListener
                 else
                 {
                     JOptionPane.showMessageDialog(null, "Please make sure all fields are filled out completely. \n"
-                    + "Note that 0 items or more than 144 items are invalid entries.");
+                            + "Note that 0 items or more than 144 items are invalid entries.");
                 }
             } catch (NumberFormatException exc)
             {
@@ -374,12 +372,14 @@ public class GUICreator extends JFrame implements ActionListener
                 {
                     dbConn.deleteByID(parseInt(inventoryIDTxt.getText()));
                     refreshTheTable();
+                    clearFields();
                 }
                 catch (NumberFormatException numEx)
                 {
                     JOptionPane.showMessageDialog(null, "Please enter the ID of the item you wish to remove.");
                 }
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 Logger.getLogger(GUICreator.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (e.getSource() == okButton)
@@ -415,12 +415,12 @@ public class GUICreator extends JFrame implements ActionListener
         }
         else //else it's the check inventory button
         {
-        	try {
-				@SuppressWarnings("unused")
-				NotificationDialog nd= new NotificationDialog();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
+            try {
+                @SuppressWarnings("unused")
+                NotificationDialog nd= new NotificationDialog();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
         }
         data.countTotalInventory();
         data.countFoodGroup();
